@@ -1,6 +1,6 @@
 # Mentha CRM 🌿
 
-**Versão atual: 2.3.0** — veja o [histórico de versões](CHANGELOG.md).
+**Versão atual: 2.4.0** — veja o [histórico de versões](CHANGELOG.md).
 
 CRM e controle financeiro do **Mentha Nail Design** em um único arquivo (`index.html`), feito para rodar no GitHub Pages.
 

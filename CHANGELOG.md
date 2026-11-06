@@ -3,6 +3,15 @@
 Cada versão publicada fica marcada no GitHub (aba **Releases**) e pode ser restaurada a qualquer momento.
 A versão em uso aparece no app em **Config → Sobre**.
 
+## V2.4 — 2.4.0 (06/11/2026)
+
+**Horário de término no atendimento**
+- Novo campo **Término**, ao lado do Início, no formulário de novo atendimento e de edição.
+- Calculado sozinho pela duração dos serviços escolhidos (Config → Serviços), e atualizado ao trocar os serviços ou o início.
+- Pode ser alterado à mão. A duração ajustada fica salva, aparece no calendário e no Google Agenda, e acompanha o início se ele mudar. O link "calcular pelos serviços" volta ao automático.
+- Eventos importados do Google já trazem a duração do evento.
+- O botão **🗑 Excluir atendimento** ficou mais visível dentro do formulário.
+
 ## V2.3 — 2.3.0 (06/11/2026)
 
 **Agenda mais fácil**

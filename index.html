@@ -60,7 +60,7 @@ nav.tabs button i{font-style:normal}
 .btn.g{background:var(--g);box-shadow:none}
 .btn.sm{padding:5px 9px;font-size:12.5px;border-radius:8px}
 .btn.danger{background:var(--danger);box-shadow:none}
-.btn.ghost.danger{background:transparent;color:var(--danger);border-color:var(--danger-soft)}
+.btn.ghost.danger{background:transparent;color:var(--danger);border-color:#F0B7B3}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;min-width:0}
 .card h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
 .card h3 .r{margin-left:auto}
@@ -295,6 +295,7 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none!importa
 .cli-ag .cacts{display:flex;gap:6px}
 @media(max-width:760px){.cli-ag .li{flex-wrap:wrap}.cli-ag .li .grow{flex:1 1 calc(100% - 140px)}.cli-ag .li .grow b{white-space:normal}.cli-ag .cacts{flex:1 1 100%;justify-content:flex-end}}
 .cli-ag .li .when{min-width:118px;font-weight:700;font-variant-numeric:tabular-nums}
+@media(max-width:520px){.rowfim{grid-template-columns:1fr 1fr}.rowfim label:first-child{grid-column:1/-1}}
 ol.steps{padding-left:18px;margin:6px 0}ol.steps li{margin-bottom:6px;font-size:13.5px}
 @media(max-width:820px){.kpis{grid-template-columns:1fr 1fr;gap:10px}.kpi{padding:12px}.kpi .v{font-size:19px}.kpi .s{font-size:11.5px}}
 
@@ -422,7 +423,7 @@ body.noscroll{overflow:hidden}
 <script>
 /* ================= utilidades ================= */
 const KEY='mentha_crm_v1';
-const APP_VERSION='2.3.0';
+const APP_VERSION='2.4.0';
 const $=id=>document.getElementById(id);
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
 const p2=n=>String(n).padStart(2,'0');
@@ -741,7 +742,16 @@ function itemSel(sel){const s=db.services.find(x=>x.nome===sel.value);if(s)sel.n
 function addItem(){$('items').insertAdjacentHTML('beforeend',itemRow())}
 function formProcTotal(){return[...document.querySelectorAll('#items .irow')].filter(r=>!/taxa|cancelamento/.test(norm(r.querySelector('.is').value))).reduce((s,r)=>s+(+r.querySelector('.iv').value||0),0)}
 function txToggle(){const st=$('aSt')&&$('aSt').value,on=st==='cancelado'||st==='faltou';if(!$('aTxRow'))return;$('aTxRow').style.display=on?'':'none';const sug=Math.round(formProcTotal()*taxaPct())/100;$('aTxHint').innerHTML=`Sugestão: ${taxaPct()}% dos procedimentos = <b>${BRL(sug)}</b>. Use 0 se não cobrar. Entra na receita, mas não conta como atendimento.`;if(on&&$('aTx').value==='')$('aTx').value=sug}
-function updTot(){if(!$('aTot'))return;const t=[...document.querySelectorAll('#items .iv')].reduce((s,i)=>s+(+i.value||0),0)+(+$('aAd').value||0);const r=Math.round(t*(1-fee($('aPg').value)/100)*100)/100;$('aTot').innerHTML=`Total: <b>${BRL(t)}</b>${r!==t?` · recebido após taxa: <b>${BRL(r)}</b>`:''}`}
+let fimMan=false,fimDur=0;
+function durForm(){const d=[...document.querySelectorAll('#items .is')].reduce((t,s)=>{const x=db.services.find(v=>v.nome===s.value);return t+(x?+x.duracao||0:0)},0);return d||+db.settings.duracaoPadrao||90}
+const fmtDur=m=>m>=60?`${Math.floor(m/60)}h${m%60?p2(m%60):''}`:`${m} min`;
+function fimHint(){const e=$('aFimHint');if(!e)return;const hI=$('aHora').value;if(!hI){e.innerHTML='Sem horário de início: o término é calculado quando você escolher o início.';return}
+ e.innerHTML=fimMan?`Duração: <b>${fmtDur(fimDur)}</b> (ajustada à mão) · <a href="#" onclick="fimAuto();return false">calcular pelos serviços (${fmtDur(durForm())})</a>`:`Duração: <b>${fmtDur(fimDur)}</b>, calculada pelos serviços. Você pode mudar o término.`}
+function updFim(){if(!$('aFim'))return;const hI=$('aHora').value;if(!fimMan)fimDur=durForm();$('aFim').value=hI?fromMin(Math.min(toMin(hI)+fimDur,23*60+59)):'';fimHint()}
+function fimFromStart(){updFim()}
+function fimManual(){const hI=$('aHora').value,hF=$('aFim').value;if(!hI||!hF)return;const d=toMin(hF)-toMin(hI);fimMan=true;fimDur=d;fimHint();if(d<=0)$('aFimHint').innerHTML='<span style="color:var(--danger)">O término precisa ser depois do início.</span>'}
+function fimAuto(){fimMan=false;updFim()}
+function updTot(){updFim();if(!$('aTot'))return;const t=[...document.querySelectorAll('#items .iv')].reduce((s,i)=>s+(+i.value||0),0)+(+$('aAd').value||0);const r=Math.round(t*(1-fee($('aPg').value)/100)*100)/100;$('aTot').innerHTML=`Total: <b>${BRL(t)}</b>${r!==t?` · recebido após taxa: <b>${BRL(r)}</b>`:''}`}
 function cliHint(){const c=db.clients.find(x=>norm(x.nome)===norm($('aCli').value));const h=$('cliHint');if(!h)return;if(!$('aCli').value.trim()){h.innerHTML='';return}h.innerHTML=c?[c.alergiaDesc?`<span class="pill bad">⚠️ Alergia: ${esc(c.alergiaDesc)}</span>`:'',c.gestante?'<span class="pill warn">Gestante</span>':'',c.diabetes?'<span class="pill warn">Diabetes</span>':'',c.telefone?`<span class="pill">${esc(c.telefone)}</span>`:''].join(' '):'<span class="pill ok">Nova cliente — será cadastrada ao salvar</span>'}
 function apptForm(id,preset={}){
  const a=id?db.appts.find(x=>x.id===id):Object.assign({data:cur===todayISO().slice(0,7)?todayISO():cur+'-01',hora:'09:00',status:'agendado',items:[],adicional:0,pagamento:'',descricao:'',ficha:{}},preset);
@@ -749,7 +759,8 @@ function apptForm(id,preset={}){
  const items=a.items&&a.items.length?a.items:[{}];
  const canSync=!!db.settings.gClientId;
  modal(id?'Editar atendimento':'Novo atendimento',`
- <div class="row"><label class="f">Data<input id="aData" type="date" value="${a.data}"></label><label class="f">Horário<input id="aHora" type="time" value="${a.hora||''}"></label></div>
+ <div class="row3 rowfim"><label class="f">Data<input id="aData" type="date" value="${a.data}"></label><label class="f">Início<input id="aHora" type="time" value="${a.hora||''}" oninput="fimFromStart()"></label><label class="f">Término<input id="aFim" type="time" oninput="fimManual()"></label></div>
+ <div class="small muted" id="aFimHint" style="margin:-4px 0 12px"></div>
  <label class="f">Cliente<input id="aCli" list="dlCli" autocomplete="off" value="${esc(nome)}" oninput="cliHint()" placeholder="Digite o nome"></label>
  <datalist id="dlCli">${db.clients.map(c=>`<option value="${esc(c.nome)}">`).join('')}</datalist>
  <div id="cliHint" class="chips" style="margin:-4px 0 10px"></div>
@@ -767,16 +778,19 @@ function apptForm(id,preset={}){
  </details>
  <details><summary>Valor recebido manual</summary><label class="f">Recebido líquido (deixe vazio para calcular com as taxas)<input id="aRec" type="number" step="0.01" value="${a.recebido??''}"></label></details>
  ${canSync?`<label class="ck"><input type="checkbox" id="aSync" ${a.status!=='realizado'||a.gcalId?'checked':''}> Registrar no Google Agenda ${a.gcalId?'<span class="pill gg">já está no Google</span>':gReady()?'':'<span class="small muted">(vai pedir o login do Google)</span>'}</label>`:''}`,
- {onSave:()=>saveAppt(id,{gcalId:a.gcalId,gLinked:a.gLinked,gcalCal:a.gcalCal}),extra:id?`<button class="btn ghost danger" onclick="delAppt('${id}')">Excluir</button>`:''});
- cliHint();updTot();txToggle();
+ {onSave:()=>saveAppt(id,{gcalId:a.gcalId,gLinked:a.gLinked,gcalCal:a.gcalCal}),extra:id?`<button class="btn ghost danger" onclick="delAppt('${id}')">🗑 Excluir atendimento</button>`:''});
+ fimMan=!!+a.duracao;fimDur=+a.duracao||0;cliHint();updTot();txToggle();
 }
 function saveAppt(id,P={}){
  const nome=$('aCli').value.trim();if(!nome)return toast('Informe a cliente');if(!$('aData').value)return toast('Informe a data');
  let c=db.clients.find(x=>norm(x.nome)===norm(nome));if(!c){c=newClient({nome:nome.replace(/\s+/g,' ')});db.clients.push(c);toast('Nova cliente cadastrada 🌿')}
  const items=[...document.querySelectorAll('#items .irow')].map(r=>({servico:r.querySelector('.is').value,valor:+r.querySelector('.iv').value||0})).filter(i=>i.servico||i.valor);
+ const hI=$('aHora').value,hF=$('aFim')?$('aFim').value:'';if(hI&&hF&&toMin(hF)<=toMin(hI))return toast('O término precisa ser depois do início');
+ const durSave=hI&&hF&&fimMan?toMin(hF)-toMin(hI):0;
  const doSync=$('aSync')&&$('aSync').checked;
  let a=id?db.appts.find(x=>x.id===id):null;const isNew=!a;if(!a)a={id:uid(),criadoEm:new Date().toISOString(),gcalId:P.gcalId||'',gLinked:!!P.gLinked,gcalCal:P.gcalCal||''};
  Object.assign(a,{data:$('aData').value,hora:$('aHora').value,clientId:c.id,cliente:c.nome,items,adicional:+$('aAd').value||0,pagamento:$('aPg').value,status:$('aSt').value,taxa:($('aSt').value==='cancelado'||$('aSt').value==='faltou')?Math.max(0,+$('aTx').value||0):null,prof:$('aPf')?$('aPf').value:pf(a),descricao:$('aDesc').value.trim(),recebido:$('aRec').value===''?null:+$('aRec').value,ficha:{saudavel:$('fS').value,obs:$('fO').value.trim(),produtos:$('fP').value.trim()}});
+ if(durSave&&durSave!==durForm())a.duracao=durSave;else delete a.duracao;
  if(doSync)a.gPending=true;if(isNew)db.appts.push(a);save();closeModal();render();
  if(doSync){if(gReady())syncAppt(a);else if(db.settings.gClientId)gConnect(flushPending)}
 }
@@ -1174,7 +1188,7 @@ async function flushPending(){if(!gReady())return gConnect(flushPending);let n=0
  for(const q of (db.gDelQ||[]).slice()){const o=typeof q==='string'?{id:q,cal:db.settings.gCalendarId||'primary'}:q;try{await gFetch(`calendars/${encodeURIComponent(o.cal)}/events/${o.id}`,{method:'DELETE'})}catch(e){}db.gDelQ=db.gDelQ.filter(x=>x!==q)}
  for(const a of gPendList()){if(a.status==='realizado'&&!a.gcalId){a.gPending=false;continue}if(await (a.gLinked&&a.gcalId&&a.status==='agendado'?gMove(a):syncAppt(a,true)))n++;else er++}
  save();gEv.key='';render();toast(n||er?`${n} atendimento(s) enviados ao Google Agenda${er?` · ${er} com erro`:''} ✓`:'Google Agenda em dia ✓')}
-function importGEvent(id){const e=(gEv.items||[]).find(x=>x.id===id);if(!e)return;const st=e.start.dateTime||e.start.date;const sum=String(e.summary||'').replace(/^(💅|✅)\s*/,'');const[nome,sv]=sum.split(/\s+[—–\-|]\s+/);const items=(sv||'').split('+').map(s=>s.trim()).filter(Boolean).map(n=>{const s=db.services.find(x=>norm(x.nome)===norm(n));return{servico:s?s.nome:n,valor:s?s.preco:''}});const c=findClient(nome);const lc=e.start.dateTime&&gLocal(st);apptForm(null,{prof:e._prof||prof||'Thais',gcalCal:e._cal||'',data:lc?lc.d:st.slice(0,10),hora:lc?lc.h:'',gLinked:true,clientId:c?c.id:'',cliente:(nome||'').trim(),items,gcalId:e.id})}
+function importGEvent(id){const e=(gEv.items||[]).find(x=>x.id===id);if(!e)return;const st=e.start.dateTime||e.start.date;const sum=String(e.summary||'').replace(/^(💅|✅)\s*/,'');const[nome,sv]=sum.split(/\s+[—–\-|]\s+/);const items=(sv||'').split('+').map(s=>s.trim()).filter(Boolean).map(n=>{const s=db.services.find(x=>norm(x.nome)===norm(n));return{servico:s?s.nome:n,valor:s?s.preco:''}});const c=findClient(nome);const lc=e.start.dateTime&&gLocal(st);const dEv=e.start.dateTime&&e.end&&e.end.dateTime?Math.round((new Date(e.end.dateTime)-new Date(e.start.dateTime))/6e4):0;apptForm(null,{duracao:dEv>=10&&dEv<=720?dEv:undefined,prof:e._prof||prof||'Thais',gcalCal:e._cal||'',data:lc?lc.d:st.slice(0,10),hora:lc?lc.h:'',gLinked:true,clientId:c?c.id:'',cliente:(nome||'').trim(),items,gcalId:e.id})}
 
 
 
