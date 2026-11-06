@@ -1,6 +1,6 @@
 # Mentha CRM 🌿
 
-**Versão atual: 2.2.0** — veja o [histórico de versões](CHANGELOG.md).
+**Versão atual: 2.3.0** — veja o [histórico de versões](CHANGELOG.md).
 
 CRM e controle financeiro do **Mentha Nail Design** em um único arquivo (`index.html`), feito para rodar no GitHub Pages.
 
@@ -12,6 +12,7 @@ CRM e controle financeiro do **Mentha Nail Design** em um único arquivo (`index
 - **Painel** no modelo da aba Outubro.26: meta do mês, quanto falta, total bruto faturado, total de gastos e total líquido, além de próximos atendimentos, clientes que precisam reagendar, contas pendentes, aniversariantes e dízimo sugerido.
 - **Cancelamentos e faltas**: botão *Cancelou/Faltou* sugere taxa de 50% dos procedimentos; a taxa entra na receita, mas não conta como atendimento.
 - **Ranking de indicações** (Relatórios): quem mais indicou clientes, para premiar.
+- **Agenda com arrastar e soltar** (inclusive no celular), filtro por cliente com envio dos horários pelo WhatsApp e exclusão rápida.
 - **Agenda**: visões Dia, Semana, Mês e Lista (como o Google Agenda), com filtro de data. Clique num horário vazio para agendar. Tudo o que é criado, concluído ou excluído vai automaticamente para o Google Agenda; se o login do Google tiver expirado, os eventos ficam na fila e são enviados quando você entrar de novo.
 - **Receitas**: tabela igual à da planilha (Data, Cliente, Procedimento, Valor, Adicional, Pagamento, Total, Descrição). Os valores são líquidos, como na planilha (o desconto da maquininha é opcional em Config). Botão **Conferir com a planilha** compara o mês com a aba da planilha.
 - **Despesas**: Pago/Pendente com um toque, tipos e meios de pagamento da planilha, parcelamentos (1/10, 2/10…) e botão para gerar as despesas fixas do mês.

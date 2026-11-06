@@ -3,6 +3,20 @@
 Cada versão publicada fica marcada no GitHub (aba **Releases**) e pode ser restaurada a qualquer momento.
 A versão em uso aparece no app em **Config → Sobre**.
 
+## V2.3 — 2.3.0 (06/11/2026)
+
+**Agenda mais fácil**
+- **Filtro por cliente:** digite o nome da cliente para ver só os horários dela e a lista dos próximos atendimentos.
+  - **📲 Enviar horários pelo WhatsApp:** manda todos os próximos horários numa mensagem só.
+  - **📋 Copiar mensagem** e **+ Agendar para ela**.
+  - Na ficha da cliente há o botão **📅 Horários**.
+- **Arrastar e soltar:** mude o dia ou a hora arrastando o atendimento nas visões Dia, Semana e Mês. No celular e no tablet, segure o horário um instante e arraste.
+  - Para passar para outra semana ou mês, arraste até **Próxima semana ›** ou **‹ Semana anterior**.
+  - O horário encaixa de 15 em 15 minutos e há aviso se bater com outro horário da mesma profissional.
+  - Depois de mover, aparece **Desfazer**.
+  - No Google Agenda, só a data e a hora do evento mudam.
+- **Excluir horários:** arraste até **🗑 Excluir** ou use o botão 🗑 nos cartões. Sempre pede confirmação e também remove o evento do Google Agenda.
+
 ## V2.2 — 2.2.0 (01/11/2026)
 
 **Ranking de indicações** (Relatórios)
