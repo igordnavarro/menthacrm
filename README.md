@@ -1,6 +1,6 @@
 # Mentha CRM 🌿
 
-**Versão atual: 2.4.0** — veja o [histórico de versões](CHANGELOG.md).
+**Versão atual: 2.5.0** — veja o [histórico de versões](CHANGELOG.md).
 
 CRM e controle financeiro do **Mentha Nail Design** em um único arquivo (`index.html`), feito para rodar no GitHub Pages.
 
@@ -11,6 +11,7 @@ CRM e controle financeiro do **Mentha Nail Design** em um único arquivo (`index
 - **Profissionais** (Thais e Amanda): cada atendimento tem a profissional; filtro Todas/Thais/Amanda no Painel, Agenda, Receitas e Relatórios; cada uma tem a sua agenda no Google.
 - **Painel** no modelo da aba Outubro.26: meta do mês, quanto falta, total bruto faturado, total de gastos e total líquido, além de próximos atendimentos, clientes que precisam reagendar, contas pendentes, aniversariantes e dízimo sugerido.
 - **Cancelamentos e faltas**: botão *Cancelou/Faltou* sugere taxa de 50% dos procedimentos; a taxa entra na receita, mas não conta como atendimento.
+- **Retorno das clientes** (Relatórios): quem veio no mês passado e ainda precisa de horário no mês atual e no próximo, com convite pelo WhatsApp e exportação para Excel.
 - **Ranking de indicações** (Relatórios): quem mais indicou clientes, para premiar.
 - **Agenda com arrastar e soltar** (inclusive no celular), filtro por cliente com envio dos horários pelo WhatsApp e exclusão rápida.
 - **Agenda**: visões Dia, Semana, Mês e Lista (como o Google Agenda), com filtro de data. Clique num horário vazio para agendar. Tudo o que é criado, concluído ou excluído vai automaticamente para o Google Agenda; se o login do Google tiver expirado, os eventos ficam na fila e são enviados quando você entrar de novo.

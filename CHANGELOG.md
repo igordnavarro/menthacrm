@@ -3,6 +3,21 @@
 Cada versão publicada fica marcada no GitHub (aba **Releases**) e pode ser restaurada a qualquer momento.
 A versão em uso aparece no app em **Config → Sobre**.
 
+## V2.5 — 2.5.0 (14/11/2026)
+
+**Relatórios → Retorno das clientes** (nova aba)
+- Atualiza sozinho: as clientes que vieram no **mês passado** precisam ter horário no **mês atual e no próximo**. Hoje é outubro → novembro e dezembro; em dezembro passa a ser novembro → dezembro e janeiro. Dá para escolher outro mês base.
+- Intervalo ideal de **20 a 30 dias**, editável na própria tela.
+- Números de resumo (vieram, em dia, precisam de horário, atrasadas) e uma barra com a situação de cada grupo.
+- Lista ordenada por urgência, com filtros (atrasadas, sem horário, falta mês atual, falta próximo mês, intervalo longo), busca e visão **Cartões ou Tabela** com ordenação por coluna.
+- Em cada cliente:
+  - **Convidar** (WhatsApp com mensagem pronta e janela de datas);
+  - **Agendar** (formulário já com a cliente, o último serviço e a data sugerida);
+  - **Ignorar** (para alunas e clientes esporádicas; também na ficha da cliente).
+- **Copiar lista** e **Exportar Excel**.
+- O Painel ganhou o cartão **Retorno das clientes**, com as mais urgentes, no lugar do antigo "Precisa agendar".
+- Relatórios foi dividido em abas: **Financeiro**, **Retorno das clientes** e **Indicações**.
+
 ## V2.4 — 2.4.0 (06/11/2026)
 
 **Horário de término no atendimento**
