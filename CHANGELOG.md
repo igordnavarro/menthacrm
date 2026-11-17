@@ -3,6 +3,18 @@
 Cada versão publicada fica marcada no GitHub (aba **Releases**) e pode ser restaurada a qualquer momento.
 A versão em uso aparece no app em **Config → Sobre**.
 
+## V2.6 — 2.6.0 (17/11/2026)
+
+**Agenda no celular, no estilo do Google Agenda**
+- Barra de cima mais enxuta: o nome do mês (toque para abrir um **minicalendário** e pular para qualquer dia), 🔍 filtro (profissional e cliente), **Hoje** e o botão de **modo de visualização**.
+- Novos modos: **Programação** (lista contínua dos próximos dias, que carrega mais conforme você desce) e **3 dias**, além de Dia, Semana e Mês.
+- **Deslize para o lado** para ir ao próximo ou ao anterior dia/semana/mês.
+- A semana cabe inteira na tela (sem rolagem lateral). A grade de horários rola sozinha, com o cabeçalho dos dias fixo, e já abre no horário atual ou no primeiro atendimento.
+- No modo Dia, uma faixa com a semana mostra pontinhos nos dias com atendimento.
+- Botão **+** flutuante para um novo atendimento.
+- Rolagem mais leve: o app só "segura" o toque quando você está de fato arrastando um atendimento.
+- O computador e o tablet continuam com o layout anterior, e ganharam o modo **3 dias**.
+
 ## V2.5 — 2.5.0 (14/11/2026)
 
 **Relatórios → Retorno das clientes** (nova aba)

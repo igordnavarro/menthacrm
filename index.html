@@ -298,6 +298,56 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none!importa
 @media(max-width:520px){.rowfim{grid-template-columns:1fr 1fr}.rowfim label:first-child{grid-column:1/-1}}
 .reltabs{display:flex;width:fit-content;max-width:100%;overflow-x:auto}.reltabs button{white-space:nowrap}
 @media(max-width:760px){.reltabs{width:100%}.reltabs button{flex:1;padding:9px 6px}}
+
+.tg-scroll{position:relative}
+.wk-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:6px 4px;border-bottom:1px solid var(--line);background:var(--surface)}
+.wk-strip button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;font-family:inherit;color:var(--muted);cursor:pointer;border-radius:12px}
+.wk-strip span{font-size:11px;font-weight:600}.wk-strip b{font-size:16px;color:var(--ink);width:34px;height:34px;display:grid;place-items:center;border-radius:50%;font-weight:600}
+.wk-strip .today span{color:var(--brand)}.wk-strip .today b{color:var(--brand)}
+.wk-strip .sel b{background:var(--brand);color:#fff}
+.wk-strip i,.mini-g i{width:5px;height:5px;border-radius:50%;display:block}.wk-strip i.on,.mini-g i.on{background:var(--brand-2)}
+.agm{position:relative}
+.agm-bar{display:flex;align-items:center;gap:2px;margin:-4px -4px 8px}
+.agm-title{border:0;background:transparent;font:600 22px Fraunces,serif;color:var(--ink);padding:8px 6px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.agm-title .caret{font:400 14px 'DM Sans',system-ui,sans-serif;color:var(--muted);transition:transform .2s}.agm-title .caret.up{transform:rotate(180deg)}
+.agm-ic{position:relative;border:0;background:transparent;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--ink);cursor:pointer;font:600 18px 'DM Sans',system-ui,sans-serif}
+.agm-ic:active{background:var(--brand-soft)}.agm-ic.act{color:var(--brand);background:var(--brand-soft)}.agm-ic.warn{color:#A86F0E}
+.agm-ic .badge{position:absolute;top:4px;right:2px;min-width:16px;height:16px;border-radius:8px;background:#E5484D;color:#fff;font:700 10px/16px 'DM Sans',sans-serif;font-style:normal}
+.agm-ic.today span{width:24px;height:24px;border:2px solid currentColor;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:700}
+.mini{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px;margin-bottom:10px;box-shadow:var(--shadow)}
+.mini-h{display:flex;align-items:center;justify-content:space-between}.mini-h b{font-size:15px}
+.mini-g{display:grid;grid-template-columns:repeat(7,1fr);text-align:center}
+.mini-g>span{font-size:11px;color:var(--muted);font-weight:600;padding:4px 0}
+.mini-g button{border:0;background:transparent;height:40px;font:500 14px 'DM Sans',system-ui,sans-serif;color:var(--ink);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
+.mini-g button.out{color:#A3B8B0}.mini-g button.today{color:var(--brand);font-weight:800}.mini-g button.sel{background:var(--brand);color:#fff}.mini-g button.sel i.on{background:#fff}
+.agswipe{touch-action:pan-y;overflow:hidden;border-radius:var(--radius)}
+.agswipe.noswipe{touch-action:auto;overflow:visible}
+.agpane{will-change:transform}
+.fab{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:18px;border:0;background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(10,60,45,.3);display:grid;place-items:center;z-index:35;cursor:pointer}
+.fab:active{transform:scale(.96)}
+.vsheet{display:flex;flex-direction:column;gap:4px}.vsheet button{border:0;background:transparent;text-align:left;font:600 16px 'DM Sans',system-ui,sans-serif;color:var(--ink);padding:14px 12px;border-radius:12px;cursor:pointer}.vsheet button.on{background:var(--brand-soft);color:var(--brand-ink)}
+.sch-m{font:600 18px Fraunces,serif;margin:16px 4px 8px;color:var(--brand-ink)}
+.sch-d{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.sch-dl{flex:0 0 44px;display:flex;flex-direction:column;align-items:center;color:var(--muted);position:sticky;top:0}
+.sch-dl span{font-size:11px;font-weight:600;text-transform:uppercase}.sch-dl b{font-size:20px;color:var(--ink);font-weight:600;width:36px;height:36px;display:grid;place-items:center;border-radius:50%}
+.sch-d.today .sch-dl span{color:var(--brand)}.sch-d.today .sch-dl b{background:var(--brand);color:#fff}
+.sch-items{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0;padding-top:4px}
+.sch-it{border:0;text-align:left;border-radius:10px;padding:9px 12px;background:var(--pc,var(--brand));color:#fff;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}
+.sch-it b{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sch-it span{font-size:12.5px;opacity:.92;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sch-it.realizado{background:#86AE9F}.sch-it.cancelado,.sch-it.faltou{background:var(--danger-soft);color:var(--danger);text-decoration:line-through}
+.sch-it.gcal{background:#fff;color:var(--ink);border:1px dashed var(--pc,var(--g))}
+.sch-empty{color:var(--muted);font-size:13.5px;padding:10px 2px}
+@media(max-width:760px){
+ .agm .tg{display:flex;flex-direction:column;overflow:hidden}
+ .agm .tg-in{min-width:0!important;display:flex;flex-direction:column;flex:1;min-height:0}
+ .agm .tg-head,.agm .tg-all,.agm .wk-strip{flex:0 0 auto}
+ .agm .tg-scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ .agm .tg-head,.agm .tg-all,.agm .tg-body{grid-template-columns:40px repeat(var(--n),minmax(0,1fr))}
+ .agm .tg[data-n="7"] .ev{padding:2px 3px;border-radius:5px}.agm .tg[data-n="7"] .ev b{font-size:10px}.agm .tg[data-n="7"] .ev span{display:none}
+ .agm .tg[data-n="7"] .tg-dh b{width:28px;height:28px;font-size:14px}.agm .tg[data-n="7"] .tg-dh span{font-size:10px}
+ .agm .tg[data-n="3"] .ev span{font-size:10.5px}
+ .agm .tg-hours span{font-size:10px;right:5px}
+}
 ol.steps{padding-left:18px;margin:6px 0}ol.steps li{margin-bottom:6px;font-size:13.5px}
 @media(max-width:820px){.kpis{grid-template-columns:1fr 1fr;gap:10px}.kpi{padding:12px}.kpi .v{font-size:19px}.kpi .s{font-size:11.5px}}
 
@@ -425,7 +475,7 @@ body.noscroll{overflow:hidden}
 <script>
 /* ================= utilidades ================= */
 const KEY='mentha_crm_v1';
-const APP_VERSION='2.5.0';
+const APP_VERSION='2.6.0';
 const $=id=>document.getElementById(id);
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
 const p2=n=>String(n).padStart(2,'0');
@@ -635,9 +685,10 @@ function durMin(a){if(+a.duracao)return+a.duracao;return(a.items||[]).reduce((t,
 const toMin=h=>{const[a,b]=String(h||'0:0').split(':').map(Number);return a*60+(b||0)};
 const fromMin=m=>p2(Math.floor(m/60)%24)+':'+p2(Math.round(m%60));
 const PXH=56;
-function agRange(){if(agView==='dia')return[agDate,agDate];if(agView==='semana'){const s=wkStart(agDate);return[s,addD(s,6)]}if(agView==='mes'){const s=wkStart(agDate.slice(0,7)+'-01');return[s,addD(s,41)]}return[agFrom||agDate.slice(0,7)+'-01',agTo||mEnd(agDate.slice(0,7))]}
-function agTitle(){if(agView==='dia')return`${dow(agDate)}, ${fdl(agDate)} de ${agDate.slice(0,4)}`;if(agView==='semana'){const s=wkStart(agDate),e=addD(s,6);return`${fdl(s)} – ${fdl(e)} de ${e.slice(0,4)}`}if(agView==='mes')return mLabel(agDate.slice(0,7));const[f,t]=agRange();return`${fd(f)} a ${fd(t)}`}
-function agNav(k){if(k===0){agDate=todayISO();agFrom='';agTo=''}else if(agView==='dia')agDate=addD(agDate,k);else if(agView==='semana')agDate=addD(agDate,7*k);else{agDate=addM(agDate.slice(0,7),k)+'-01';agFrom='';agTo=''}cur=agDate.slice(0,7);render()}
+const MOB=()=>innerWidth<760;let agListDays=30,agMini=false,agMiniM='',agAnim=0,agScrollMem={k:'',top:0};
+function agRange(){if(agView==='dia')return[agDate,agDate];if(agView==='dias3')return[agDate,addD(agDate,2)];if(agView==='lista'&&MOB())return[agDate,addD(agDate,agListDays-1)];if(agView==='semana'){const s=wkStart(agDate);return[s,addD(s,6)]}if(agView==='mes'){const s=wkStart(agDate.slice(0,7)+'-01');return[s,addD(s,41)]}return[agFrom||agDate.slice(0,7)+'-01',agTo||mEnd(agDate.slice(0,7))]}
+function agTitle(){if(agView==='dias3'){const e=addD(agDate,2);return`${fdl(agDate)} – ${fdl(e)} de ${e.slice(0,4)}`}if(agView==='dia')return`${dow(agDate)}, ${fdl(agDate)} de ${agDate.slice(0,4)}`;if(agView==='semana'){const s=wkStart(agDate),e=addD(s,6);return`${fdl(s)} – ${fdl(e)} de ${e.slice(0,4)}`}if(agView==='mes')return mLabel(agDate.slice(0,7));const[f,t]=agRange();return`${fd(f)} a ${fd(t)}`}
+function agNav(k,anim){agAnim=anim||0;if(k===0){agDate=todayISO();agFrom='';agTo='';agListDays=30}else if(agView==='dia')agDate=addD(agDate,k);else if(agView==='dias3')agDate=addD(agDate,3*k);else if(agView==='lista'&&MOB())agDate=addD(agDate,14*k);else if(agView==='semana')agDate=addD(agDate,7*k);else{agDate=addM(agDate.slice(0,7),k)+'-01';agFrom='';agTo=''}cur=agDate.slice(0,7);render()}
 function agGo(d){if(!d)return;agDate=d;cur=d.slice(0,7);if(agView==='lista'){agFrom=d;agTo=''}render()}
 function agSet(v){agView=v;try{localStorage.setItem('mentha_agview',v)}catch(e){}render()}
 function gLocal(dt){const x=new Date(dt);if(isNaN(x))return null;return{d:x.getFullYear()+'-'+p2(x.getMonth()+1)+'-'+p2(x.getDate()),h:p2(x.getHours())+':'+p2(x.getMinutes()),min:x.getHours()*60+x.getMinutes()}}
@@ -669,18 +720,86 @@ function agEnsureG(f,t){if(!gReady())return;const RC=readCals();const k=f+'|'+t+
  Promise.all(RC.map(c=>gFetch(`calendars/${encodeURIComponent(c.cal)}/events?singleEvents=true&orderBy=startTime&maxResults=500&timeMin=${tmin}&timeMax=${tmax}`).then(j=>((j&&j.items)||[]).map(e=>Object.assign(e,{_prof:c.prof,_cal:c.cal}))))).then(L=>{gEv={key:k,items:L.flat()};const n=gMatch(gEv.items);if(n)toast(`${n} horário(s) puxados do Google Agenda ✓`);if(tab==='agenda')render()}).catch(e=>{gEv.loading='';toast('Erro Google: '+e.message)})}
 function gPendList(){const td=todayISO();return db.appts.filter(a=>a.gPending||(a.status==='agendado'&&a.data>=td&&!a.gcalId))}
 function rAgenda(v){
+ if(MOB())return rAgendaM(v);
  const[f,t]=agRange();agEnsureG(f,t);
  const pend=db.settings.gClientId?gPendList().length+(db.gDelQ||[]).length:0;
  const gBtn=!db.settings.gClientId?`<button class="btn ghost" onclick="go('config')">🔗 Conectar Google Agenda</button>`:gReady()?`<span class="pill gg" title="Os atendimentos criados aqui vão para o Google Agenda">● Google Agenda conectada</span><button class="btn ghost sm" onclick="gEv.key='';render()" title="Recarregar eventos do Google">↻</button>`:`<button class="btn g" onclick="gConnect(flushPending)">🔗 Entrar com Google</button>`;
- const V=[['dia','Dia'],['semana','Semana'],['mes','Mês'],['lista','Lista']];
+ const V=[['dia','Dia'],['dias3','3 dias'],['semana','Semana'],['mes','Mês'],['lista','Lista']];
  const nd=agView==='dia'||agDate>todayISO()?agDate:todayISO();
  v.innerHTML=`<div class="toolbar"><h2>Agenda</h2>${gBtn}${pend?`<button class="btn soft sm" onclick="gReady()?flushPending():gConnect(flushPending)" title="Agendamentos ainda não enviados ao Google Agenda">⟳ Enviar ${pend} ao Google</button>`:''}${db.settings.gClientId&&db.appts.some(a=>a.data&&!a.hora&&!a.gcalId&&a.status!=='cancelado')?`<button class="btn ghost" onclick="pullTimes()" title="Copia o horário dos eventos do Google Agenda para os atendimentos sem hora">🕒 Puxar horários do Google</button>`:''}<button class="btn" onclick="apptForm(null,{data:'${nd}'})">+ Agendar</button></div>
  ${profBar()}<div class="clibar"><input class="tinput" list="dlAgCli" placeholder="🔍 Filtrar por cliente" value="${agCli&&client(agCli)?esc(client(agCli).nome):''}" onchange="agSetCli(this.value)"><datalist id="dlAgCli">${db.clients.slice().sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')).map(c=>`<option value="${esc(c.nome)}">`).join('')}</datalist>${agCli?'<button class="btn ghost sm" onclick="agSetCli(\'\')">✕ Limpar</button>':''}</div>${agCli?cliAgendaCard():''}<div class="calbar sect"><b class="caltitle">${agTitle()}</b><button class="btn ghost sm" onclick="agNav(0)">Hoje</button><button class="btn ghost sm icon" onclick="agNav(-1)" aria-label="Anterior">‹</button><button class="btn ghost sm icon" onclick="agNav(1)" aria-label="Próximo">›</button><input type="date" class="tinput" style="width:auto" value="${agDate}" onchange="agGo(this.value)" title="Ir para a data"><span style="flex:1"></span><div class="seg">${V.map(([k,l])=>`<button class="${agView===k?'on':''}" onclick="agSet('${k}')">${l}</button>`).join('')}</div></div>
  ${agView==='lista'?`<div class="calbar sect"><label class="small muted">De <input type="date" class="tinput" style="width:auto" value="${f}" onchange="agFrom=this.value;render()"></label><label class="small muted">Até <input type="date" class="tinput" style="width:auto" value="${t}" onchange="agTo=this.value;render()"></label><div class="chips">${[['prox','Só agendados'],['todos','Todos']].map(([k,l])=>`<button class="chip ${agFilter===k?'on':''}" onclick="agFilter='${k}';render()">${l}</button>`).join('')}</div></div>`:''}
- ${agView==='mes'?calMonth(f):agView==='lista'?calList(f,t):calGrid(agView==='dia'?[agDate]:[0,1,2,3,4,5,6].map(i=>addD(f,i)))}
+ ${agView==='mes'?calMonth(f):agView==='lista'?calList(f,t):calGrid(agDaysOf(f))}
  <div class="chips small muted" style="margin-top:10px;gap:12px"><span><span class="ev-chip realizado" style="display:inline-block">realizado</span></span>${PROFS().map(p=>`<span><span class="ev-chip" style="display:inline-block;${pstyle(p.nome)}">${esc(p.nome)}</span></span>`).join('')}<span><span class="ev-chip gcal" style="display:inline-block">evento do Google ainda não ligado</span></span><span><span class="ev-chip pend" style="display:inline-block">aguardando envio</span></span><span>Clique num horário vazio para agendar. Para mudar de dia ou hora, arraste o horário (no celular: segure e arraste).</span></div>`;
 }
 
+
+/* ================= AGENDA NO CELULAR (estilo Google Agenda) ================= */
+function agDaysOf(f){return agView==='dia'?[agDate]:agView==='dias3'?[agDate,addD(agDate,1),addD(agDate,2)]:[0,1,2,3,4,5,6].map(i=>addD(f,i))}
+const IC={
+ search:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+ view:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>',
+ sync:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16m0-4a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/></svg>',
+ plus:'<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'};
+const VNAMES={lista:'Programação',dia:'Dia',dias3:'3 dias',semana:'Semana',mes:'Mês'};
+function agTitleM(){const m=(agView==='mes'?agDate:agView==='semana'?addD(wkStart(agDate),3):agDate).slice(0,7);return MESES[+m.slice(5)-1]+(m.slice(0,4)!==todayISO().slice(0,4)?' '+m.slice(0,4):'')}
+function weekStrip(d){const s=wkStart(d),td=todayISO();const has=new Set(db.appts.filter(a=>a.status!=='cancelado'&&a.data>=s&&a.data<=addD(s,6)&&inProf(a)&&(!agCli||a.clientId===agCli)).map(a=>a.data));
+ return`<div class="wk-strip">${[0,1,2,3,4,5,6].map(i=>{const x=addD(s,i);return`<button class="${x===d?'sel':''} ${x===td?'today':''}" data-d="${x}" onclick="agGo('${x}')"><span>${DOW[i][0].toUpperCase()}</span><b>${+x.slice(8)}</b><i class="${has.has(x)?'on':''}"></i></button>`}).join('')}</div>`}
+function miniCal(){const m=agMiniM||agDate.slice(0,7),f=wkStart(m+'-01'),td=todayISO();const has=new Set(db.appts.filter(a=>a.status!=='cancelado'&&a.data>=f&&a.data<=addD(f,41)&&inProf(a)).map(a=>a.data));
+ let o=`<div class="mini"><div class="mini-h"><button class="agm-ic" aria-label="Mês anterior" onclick="agMiniM=addM('${m}',-1);render()">‹</button><b>${mLabel(m)}</b><button class="agm-ic" aria-label="Próximo mês" onclick="agMiniM=addM('${m}',1);render()">›</button></div><div class="mini-g">${DOW.map(d=>`<span>${d[0].toUpperCase()}</span>`).join('')}`;
+ for(let i=0;i<42;i++){const d=addD(f,i);o+=`<button class="${d.slice(0,7)!==m?'out':''} ${d===td?'today':''} ${d===agDate?'sel':''}" onclick="agMini=false;agGo('${d}')">${+d.slice(8)}<i class="${has.has(d)?'on':''}"></i></button>`}
+ return o+'</div></div>'}
+function agMiniToggle(){agMini=!agMini;agMiniM=agDate.slice(0,7);render()}
+function agViewSheet(){const pend=db.settings.gClientId?gPendList().length+(db.gDelQ||[]).length:0;
+ modal('Visualizar',`<div class="vsheet">${Object.entries(VNAMES).map(([k,l])=>`<button class="${agView===k?'on':''}" onclick="closeModal();agSet('${k}')">${l}</button>`).join('')}</div>
+ <div class="small muted" style="margin:14px 0 6px;font-weight:600">Google Agenda</div>
+ <div class="chips">${!db.settings.gClientId?`<button class="btn ghost" onclick="closeModal();go('config')">Conectar Google Agenda</button>`:gReady()?`<button class="btn ghost" onclick="closeModal();gEv.key='';render()">↻ Recarregar eventos</button>`:`<button class="btn g" onclick="closeModal();gConnect(flushPending)">Entrar com Google</button>`}${pend?`<button class="btn soft" onclick="closeModal();gReady()?flushPending():gConnect(flushPending)">⟳ Enviar ${pend} ao Google</button>`:''}${db.settings.gClientId&&db.appts.some(a=>a.data&&!a.hora&&!a.gcalId&&a.status!=='cancelado')?`<button class="btn ghost" onclick="closeModal();pullTimes()">🕒 Puxar horários</button>`:''}</div>
+ <div class="small muted" style="margin:14px 0 6px;font-weight:600">Cores</div>
+ <div class="chips small">${PROFS().map(p=>`<span class="ev-chip" style="display:inline-block;${pstyle(p.nome)}">${esc(p.nome)}</span>`).join('')}<span class="ev-chip realizado" style="display:inline-block">realizado</span><span class="ev-chip gcal" style="display:inline-block">evento do Google</span><span class="ev-chip pend" style="display:inline-block">aguardando envio</span></div>
+ <div class="small muted" style="margin-top:12px">Deslize para o lado para mudar de dia/semana/mês. Para mudar um horário, segure o atendimento e arraste.</div>`)}
+function agFilterSheet(){modal('Filtrar agenda',`<div class="small muted" style="font-weight:600;margin-bottom:6px">Profissional</div>
+ <div class="chips" style="margin-bottom:14px"><button class="chip ${!prof?'on':''}" onclick="closeModal();setProf('')">Todas</button>${PROFS().map(p=>`<button class="chip pchip ${prof===p.nome?'on':''}" style="${pstyle(p.nome)}" onclick="closeModal();setProf('${esc(p.nome)}')"><i></i>${esc(p.nome)}</button>`).join('')}</div>
+ <label class="f">Cliente<input id="fltCli" list="dlAgCli2" placeholder="Digite o nome da cliente" value="${agCli&&client(agCli)?esc(client(agCli).nome):''}"></label><datalist id="dlAgCli2">${db.clients.slice().sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')).map(c=>`<option value="${esc(c.nome)}">`).join('')}</datalist>
+ <div class="small muted">Mostra só os horários dela e a lista dos próximos, com envio pelo WhatsApp.</div>`,{saveLabel:'Aplicar',onSave:()=>{const v=$('fltCli').value;closeModal();agSetCli(v)},extra:(agCli||prof)?`<button class="btn ghost" onclick="closeModal();prof='';try{localStorage.setItem('mentha_prof','')}catch(e){};agSetCli('')">Limpar filtros</button>`:''})}
+function calSchedule(f,t){const td=todayISO();const L=agItems(f,t);const by={};L.forEach(x=>(by[x.data]=by[x.data]||[]).push(x));let o='',lastM='';
+ const days=Object.keys(by);if(f<=td&&td<=t&&!by[td])days.push(td);days.sort();
+ days.forEach(d=>{const m=d.slice(0,7);if(m!==lastM){o+=`<div class="sch-m">${mLabel(m)}</div>`;lastM=m}const arr=by[d]||[];
+  o+=`<div class="sch-d ${d===td?'today':''}"><div class="sch-dl"><span>${dow(d)}</span><b>${+d.slice(8)}</b></div><div class="sch-items">${arr.length?arr.map(x=>{if(x.a){const a=x.a;return`<button class="sch-it ${a.status}" style="${pstyle(pf(a))}" onclick="apptForm('${a.id}')"><b>${esc(cname(a))}</b><span>${a.hora?a.hora+' – '+fromMin(toMin(a.hora)+durMin(a)):'sem hora'} · ${esc(servs(a))}${a.status!=='agendado'?' · '+STATUS[a.status][0]:''}</span></button>`}const e=x.g;return`<button class="sch-it gcal" style="${e._prof?pstyle(e._prof):''}" onclick="importGEvent('${e.id}')"><b>${esc(e.summary||'(sem título)')}</b><span>${x.ini!=null?fromMin(x.ini):'dia todo'} · evento do Google</span></button>`}).join(''):'<div class="sch-empty">Nada agendado</div>'}</div></div>`});
+ return`<div class="sch">${f>td?`<button class="btn ghost" style="width:100%;margin-bottom:8px" onclick="agDate=addD(agDate,-14);agListDays+=14;render()">↑ Ver dias anteriores</button>`:`<button class="btn ghost" style="width:100%;margin-bottom:8px" onclick="agDate=addD(agDate,-14);agListDays+=14;render()">↑ Ver dias anteriores</button>`}${o||'<div class="empty">Nada agendado neste período.</div>'}<button class="btn ghost" id="schMore" style="width:100%;margin-top:10px" onclick="agListDays+=30;render()">Mostrar mais 30 dias</button></div>`}
+function rAgendaM(v){const[f,t]=agRange();agEnsureG(f,t);const grid=['dia','dias3','semana'].includes(agView);
+ const pend=db.settings.gClientId?gPendList().length+(db.gDelQ||[]).length:0;const td=todayISO();
+ const gIc=db.settings.gClientId&&!gReady()?`<button class="agm-ic warn" aria-label="Entrar com Google" onclick="gConnect(flushPending)">${IC.sync}</button>`:pend?`<button class="agm-ic warn" aria-label="Enviar ${pend} ao Google" onclick="gReady()?flushPending():gConnect(flushPending)">${IC.sync}<i class="badge">${pend}</i></button>`:'';
+ const body=agView==='mes'?calMonth(f):agView==='lista'?calSchedule(f,t):calGrid(agDaysOf(f));
+ v.innerHTML=`<div class="agm">
+ <div class="agm-bar"><button class="agm-title" onclick="agMiniToggle()" aria-expanded="${agMini}">${agTitleM()} <span class="caret ${agMini?'up':''}">▾</span></button><span style="flex:1"></span>${gIc}
+  <button class="agm-ic ${agCli||prof?'act':''}" aria-label="Filtrar" onclick="agFilterSheet()">${IC.search}</button>
+  <button class="agm-ic today" aria-label="Hoje" onclick="agNav(0)"><span>${+td.slice(8)}</span></button>
+  <button class="agm-ic" aria-label="Modo de visualização: ${VNAMES[agView]}" onclick="agViewSheet()">${IC.view}</button></div>
+ ${agMini?miniCal():''}
+ ${agCli||prof?`<div class="chips" style="margin:0 0 8px">${prof?`<button class="chip on" onclick="setProf('')">${esc(prof)} ✕</button>`:''}${agCli&&client(agCli)?`<button class="chip on" onclick="agSetCli('')">${esc(client(agCli).nome.split(' ')[0])} ✕</button>`:''}</div>`:''}
+ ${agCli?cliAgendaCard():''}
+ <div class="agswipe ${agView==='lista'?'noswipe':''}" id="agSwipe"><div class="agpane" id="agPane">${body}</div></div>
+ <button class="fab" aria-label="Novo atendimento" onclick="agFab()">${IC.plus}</button></div>`;
+ requestAnimationFrame(agAfter)}
+function agFab(){const td=todayISO();const d=agView==='lista'||agDate<td?td:agDate;let h='09:00';if(d===td){const n=new Date();h=fromMin(Math.min(22*60,Math.ceil((n.getHours()*60+n.getMinutes())/30)*30))}apptForm(null,{data:d,hora:h})}
+function agFit(){const t=document.querySelector('.agm .tg');if(!t)return;const nav=$('tabs');const top=t.getBoundingClientRect().top;const hh=innerHeight-top-(nav?nav.offsetHeight:0)-10;t.style.height=Math.max(320,hh)+'px'}
+function agAfter(){if(tab!=='agenda'||!MOB())return;const sc=$('tgScroll');
+ if(sc){scrollTo(0,0);agFit();const key=agView+'|'+agDate;if(agScrollMem.k===key)sc.scrollTop=agScrollMem.top;else{const H0=+sc.dataset.h0,td=todayISO(),n=new Date();const days=agDaysOf(agRange()[0]);let m;if(days.includes(td))m=n.getHours()*60+n.getMinutes()-60;else{const L=agItems(days[0],days[days.length-1]).filter(x=>x.ini!=null);m=L.length?Math.min(...L.map(x=>x.ini))-30:8*60}sc.scrollTop=Math.max(0,(m-H0*60)/60*PXH)}
+  agScrollMem={k:key,top:sc.scrollTop};sc.addEventListener('scroll',()=>{agScrollMem={k:key,top:sc.scrollTop}},{passive:true})}
+ const pane=$('agPane');if(pane&&agAnim){pane.style.transition='none';pane.style.transform=`translateX(${agAnim*28}%)`;pane.style.opacity='.35';pane.offsetWidth;pane.style.transition='transform .2s ease-out,opacity .2s';pane.style.transform='';pane.style.opacity=''}agAnim=0;
+ const more=$('schMore');if(more&&'IntersectionObserver'in window){const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){io.disconnect();agListDays+=30;render()}},{rootMargin:'200px'});io.observe(more)}
+ swipeBind()}
+let SW=null;
+function swipeBind(){const el=$('agSwipe');if(!el||el._sw||el.classList.contains('noswipe'))return;el._sw=1;
+ el.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;SW={x:e.clientX,y:e.clientY,id:e.pointerId,dx:0,on:false,t:performance.now()}},{passive:true});
+ el.addEventListener('pointermove',e=>{if(!SW||e.pointerId!==SW.id)return;if(DR&&DR.started){SW=null;return}const dx=e.clientX-SW.x,dy=e.clientY-SW.y;
+  if(!SW.on){if(Math.abs(dx)>14&&Math.abs(dx)>Math.abs(dy)*1.4){SW.on=true;SW.x=e.clientX-dx;if(DR&&!DR.started){clearTimeout(DR.timer);DR=null}}else return}
+  SW.dx=dx;const p=$('agPane');if(p){p.style.transition='none';p.style.transform=`translateX(${dx}px)`}},{passive:true});
+ const end=()=>{if(!SW)return;const s=SW;SW=null;if(!s.on)return;dragBlock=Date.now()+350;const p=$('agPane');const vel=s.dx/Math.max(1,performance.now()-s.t);
+  if(Math.abs(s.dx)>70||Math.abs(vel)>0.45){const dir=s.dx<0?1:-1;if(p){p.style.transition='transform .16s ease-in,opacity .16s';p.style.transform=`translateX(${-dir*60}%)`;p.style.opacity='0'}setTimeout(()=>agNav(dir,dir),150)}
+  else if(p){p.style.transition='transform .2s ease-out';p.style.transform=''}};
+ el.addEventListener('pointerup',end,{passive:true});el.addEventListener('pointercancel',()=>{if(SW&&SW.on)end();else SW=null},{passive:true})}
+let lastMob=MOB();addEventListener('resize',()=>{if(MOB()!==lastMob){lastMob=MOB();render()}else if(tab==='agenda')agFit()});
 const DOWL=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
 function agSetCli(v){v=String(v||'').trim();if(!v){agCli='';return render()}const c=db.clients.find(x=>norm(x.nome)===norm(v))||findClient(v);if(!c){toast('Cliente não encontrada');return}agCli=c.id;render()}
 function cliFuture(id){const td=todayISO();return db.appts.filter(a=>a.clientId===id&&a.status==='agendado'&&a.data>=td).sort(byDT)}
@@ -705,12 +824,12 @@ function calGrid(days){const td=todayISO(),one=days.length===1;const L=agItems(d
  const cols=days.map(d=>{const evs=L.filter(x=>x.data===d);return{d,all:evs.filter(x=>x.ini==null),tm:layout(evs.filter(x=>x.ini!=null))}});
  const hasAll=cols.some(c=>c.all.length),now=new Date(),nowMin=now.getHours()*60+now.getMinutes();
  const hrs=[...Array(H1-H0).keys()];
- return`<div class="tg ${one?'one':''}"><div class="tg-in" style="--n:${days.length}">
-  <div class="tg-head"><div></div>${cols.map(c=>`<button class="tg-dh ${c.d===td?'today':''}" data-d="${c.d}" onclick="agDate='${c.d}';agSet('dia')"><span>${dow(c.d)}</span><b>${+c.d.slice(8)}</b></button>`).join('')}</div>
+ return`<div class="tg ${one?'one':''}" data-n="${days.length}"><div class="tg-in" style="--n:${days.length}">
+  ${one&&MOB()?weekStrip(days[0]):`<div class="tg-head"><div></div>${cols.map(c=>`<button class="tg-dh ${c.d===td?'today':''}" data-d="${c.d}" onclick="agDate='${c.d}';agSet('dia')"><span>${dow(c.d)}</span><b>${+c.d.slice(8)}</b></button>`).join('')}</div>`}
   ${hasAll?`<div class="tg-all"><div class="tg-lbl muted">sem hora</div>${cols.map(c=>`<div>${c.all.map(evChip).join('')}</div>`).join('')}</div>`:''}
-  <div class="tg-body" style="height:${(H1-H0)*PXH}px"><div class="tg-hours">${hrs.map(i=>`<div style="height:${PXH}px"><span>${p2(H0+i)}:00</span></div>`).join('')}</div>
+  <div class="tg-scroll" id="tgScroll" data-h0="${H0}"><div class="tg-body" style="height:${(H1-H0)*PXH}px"><div class="tg-hours">${hrs.map(i=>`<div style="height:${PXH}px"><span>${p2(H0+i)}:00</span></div>`).join('')}</div>
   ${cols.map(c=>`<div class="tg-col" data-d="${c.d}" data-h0="${H0}" onclick="slotClick(event,'${c.d}',${H0})">${hrs.map(()=>`<div class="tg-line" style="height:${PXH}px"></div>`).join('')}${c.d===td&&nowMin>=H0*60&&nowMin<=H1*60?`<div class="tg-now" style="top:${(nowMin-H0*60)/60*PXH}px"></div>`:''}${c.tm.map(x=>evBlock(x,H0,one)).join('')}</div>`).join('')}
-  </div></div></div>`}
+  </div></div></div></div>`}
 function evBlock(x,H0,wide){const top=(x.ini-H0*60)/60*PXH,hg=Math.max(22,x.dur/60*PXH-2),w=100/x.lanes,l=x.lane*w;const st=`top:${top}px;height:${hg}px;left:calc(${l}% + 2px);width:calc(${w}% - 4px)`;
  if(x.a){const a=x.a,c=client(a.clientId)||{};return`<div class="ev ${a.status} ${a.gPending?'pend':''}" ${a.status==='agendado'?`data-drag="${a.id}"`:''} style="${st};${pstyle(pf(a))}" onclick="event.stopPropagation();apptForm('${a.id}')" title="${esc(cname(a)+' — '+servs(a))}"><b>${esc(cname(a))}</b><span>${a.hora} – ${fromMin(x.ini+x.dur)}${wide?' · '+esc(servs(a))+' · '+BRL(tot(a))+(prof?'':' · '+esc(pf(a))):''}</span>${!wide&&hg>60?`<span>${esc(servs(a))}</span>`:''}${c.alergiaDesc?'<i title="Alergia">⚠️</i>':''}</div>`}
  const e=x.g;return`<div class="ev gcal" style="${st};${e._prof?pstyle(e._prof):''}" onclick="event.stopPropagation();importGEvent('${e.id}')" title="Evento do Google — clique para importar"><b>${esc(e.summary||'(sem título)')}</b><span>${fromMin(x.ini)} – ${fromMin(x.ini+x.dur)} · ${e._prof?'agenda '+esc(e._prof):'Google'}</span></div>`}
@@ -1339,8 +1458,8 @@ function dragStart(x,y){const a=db.appts.find(z=>z.id===DR.id);if(!a){DR=null;re
  const r=DR.el.getBoundingClientRect();DR.offY=DR.el.classList.contains('ev')?Math.min(y-r.top,DR.dur/60*PXH):0;DR.el.classList.add('drag-src');document.body.classList.add('dragging');
  const g=document.createElement('div');g.id='dragGhost';g.className='drag-ghost';g.style.cssText=pstyle(pf(a));g.innerHTML=`${esc(cname(a))}<small>${esc(servs(a))}</small>`;document.body.appendChild(g);
  const per=agView==='mes'?'mês':agView==='dia'?'dia':'semana';const b=document.createElement('div');b.id='dragBar';b.innerHTML=`<div class="dz" data-nav="-1">‹ ${per==='semana'?'Semana':per==='mês'?'Mês':'Dia'} anterior</div><div class="dz trash" data-trash="1">🗑 Excluir</div><div class="dz" data-nav="1">${per==='semana'?'Próxima semana':per==='mês'?'Próximo mês':'Próximo dia'} ›</div>`;document.body.appendChild(b);
- DR.raf=requestAnimationFrame(dragTick);dragMove(x,y)}
-function dragTick(){if(!DR||!DR.started)return;const y=DR.y,x=DR.x;if(y<90)scrollBy(0,-12);else if(y>innerHeight-(innerWidth<760?170:110)&&y<innerHeight-(innerWidth<760?150:90))scrollBy(0,12);
+ DR.raf=requestAnimationFrame(dragTick);if(DR.touch)document.addEventListener('touchmove',dragTouchMove,{passive:false});dragMove(x,y)}
+function dragTick(){if(!DR||!DR.started)return;const y=DR.y,x=DR.x;const sc=$('tgScroll');if(sc&&MOB()){const r=sc.getBoundingClientRect();if(y<r.top+50)sc.scrollTop-=10;else if(y>r.bottom-50)sc.scrollTop+=10}if(y<90)scrollBy(0,-12);else if(y>innerHeight-(innerWidth<760?170:110)&&y<innerHeight-(innerWidth<760?150:90))scrollBy(0,12);
  const tg=document.querySelector('.tg');if(tg&&tg.scrollWidth>tg.clientWidth){const r=tg.getBoundingClientRect();if(y>r.top&&y<r.bottom){if(x<r.left+50)tg.scrollLeft-=10;else if(x>r.right-50)tg.scrollLeft+=10}}
  DR.raf=requestAnimationFrame(dragTick)}
 function dragMove(x,y){DR.x=x;DR.y=y;const g=$('dragGhost');if(g){g.style.left=x+'px';g.style.top=y+'px'}
@@ -1348,7 +1467,7 @@ function dragMove(x,y){DR.x=x;DR.y=y;const g=$('dragGhost');if(g){g.style.left=x
  if(t&&t.col){if(!pv){pv=document.createElement('div');pv.id='dropPrev';pv.className='drop-prev'}pv.style.cssText=pstyle(pf(DR.a))+`;top:${t.top}px;height:${Math.max(22,DR.dur/60*PXH-2)}px`;pv.textContent=t.hora;if(pv.parentNode!==t.col)t.col.appendChild(pv);if(g)g.querySelector('small').textContent=`${dow(t.d)} ${fds(t.d)} · ${t.hora}`}
  else{if(pv)pv.remove();if(t&&t.el)t.el.classList.add(t.nav||t.trash?'hot':'drop-on');if(g)g.querySelector('small').textContent=t&&t.d?`${dow(t.d)} ${fds(t.d)}${DR.a.hora?' · '+DR.a.hora:''}`:t&&t.trash?'Soltar para excluir':servs(DR.a)}
  if(t&&t.nav){if(DR.navDir!==t.nav){DR.navDir=t.nav;clearTimeout(DR.navT);const go2=()=>{if(!DR||DR.navDir!==t.nav)return;agNav(t.nav);DR.navT=setTimeout(go2,900)};DR.navT=setTimeout(go2,550)}}else{DR.navDir=0;clearTimeout(DR.navT)}}
-function dragStop(){if(!DR)return;cancelAnimationFrame(DR.raf);clearTimeout(DR.navT);clearTimeout(DR.timer);['dragGhost','dragBar','dropPrev'].forEach(i=>{const e=$(i);if(e)e.remove()});document.querySelectorAll('.drag-src,.drop-on').forEach(e=>e.classList.remove('drag-src','drop-on'));document.body.classList.remove('dragging');dragBlock=Date.now()+400}
+function dragStop(){document.removeEventListener('touchmove',dragTouchMove,{passive:false});if(!DR)return;cancelAnimationFrame(DR.raf);clearTimeout(DR.navT);clearTimeout(DR.timer);['dragGhost','dragBar','dropPrev'].forEach(i=>{const e=$(i);if(e)e.remove()});document.querySelectorAll('.drag-src,.drop-on').forEach(e=>e.classList.remove('drag-src','drop-on'));document.body.classList.remove('dragging');dragBlock=Date.now()+400}
 function dragEnd(x,y){const t=dragTarget(x,y),id=DR.id;dragStop();DR=null;if(!t)return;if(t.trash)return delAppt(id);if(t.d)moveAppt(id,t.d,t.col?t.hora:null)}
 document.addEventListener('click',e=>{if(Date.now()<dragBlock){e.stopPropagation();e.preventDefault()}},true);
 document.addEventListener('contextmenu',e=>{if(DR)e.preventDefault()},true);
@@ -1356,7 +1475,8 @@ document.addEventListener('mousedown',e=>{if(e.button!==0)return;const el=e.targ
 document.addEventListener('mousemove',e=>{if(!DR||DR.touch)return;if(!DR.started){if(Math.hypot(e.clientX-DR.x,e.clientY-DR.y)<6)return;dragStart(e.clientX,e.clientY)}if(DR){e.preventDefault();dragMove(e.clientX,e.clientY)}});
 document.addEventListener('mouseup',e=>{if(!DR||DR.touch)return;if(DR.started)dragEnd(e.clientX,e.clientY);DR=null});
 document.addEventListener('touchstart',e=>{const el=e.target.closest('[data-drag]');if(!el||e.touches.length>1)return;const t=e.touches[0];DR={id:el.dataset.drag,el,x:t.clientX,y:t.clientY,started:false,touch:true};DR.timer=setTimeout(()=>{if(DR&&!DR.started){dragStart(DR.x,DR.y);if(navigator.vibrate)navigator.vibrate(25)}},380)},{passive:true});
-document.addEventListener('touchmove',e=>{if(!DR||!DR.touch)return;const t=e.touches[0];if(!DR.started){if(Math.hypot(t.clientX-DR.x,t.clientY-DR.y)>8){clearTimeout(DR.timer);DR=null}return}e.preventDefault();dragMove(t.clientX,t.clientY)},{passive:false});
+document.addEventListener('touchmove',e=>{if(!DR||!DR.touch||DR.started)return;const t=e.touches[0];if(Math.hypot(t.clientX-DR.x,t.clientY-DR.y)>8){clearTimeout(DR.timer);DR=null}},{passive:true});
+function dragTouchMove(e){if(!DR||!DR.touch||!DR.started)return;const t=e.touches[0];e.preventDefault();dragMove(t.clientX,t.clientY)}
 document.addEventListener('touchend',e=>{if(!DR||!DR.touch)return;clearTimeout(DR.timer);if(DR.started){const t=e.changedTouches[0];e.preventDefault();dragEnd(t.clientX,t.clientY)}DR=null},{passive:false});
 document.addEventListener('touchcancel',()=>{if(DR){dragStop();DR=null}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&DR){dragStop();DR=null}});
