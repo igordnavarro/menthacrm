@@ -3,6 +3,14 @@
 Cada versão publicada fica marcada no GitHub (aba **Releases**) e pode ser restaurada a qualquer momento.
 A versão em uso aparece no app em **Config → Sobre**.
 
+## V2.6 — 2.6.1 (17/11/2026)
+
+**Agenda no celular ainda mais parecida com o Google Agenda**
+- Os nomes **quebram a linha** dentro do bloco, em vez de serem cortados com "…". Depois do nome vem "— serviço".
+- Atendimentos que começam com menos de 30 min de diferença ficam **lado a lado**; os que começam depois entram **deslocados e por cima**, como no Google.
+- **Horas mais compactas**: cada hora ocupa menos espaço, e cabe quase o dia todo na tela.
+- A grade ocupa a **largura toda** da tela.
+
 ## V2.6 — 2.6.0 (17/11/2026)
 
 **Agenda no celular, no estilo do Google Agenda**

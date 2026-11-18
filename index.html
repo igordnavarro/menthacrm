@@ -347,6 +347,15 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none!importa
  .agm .tg[data-n="7"] .tg-dh b{width:28px;height:28px;font-size:14px}.agm .tg[data-n="7"] .tg-dh span{font-size:10px}
  .agm .tg[data-n="3"] .ev span{font-size:10.5px}
  .agm .tg-hours span{font-size:10px;right:5px}
+ .agm .ev.evm{padding:2px 3px;border-radius:5px;display:block;border:1px solid var(--surface)}
+ .agm .ev.evm p{margin:0;font-size:11px;line-height:1.18;font-weight:500;white-space:normal;overflow-wrap:anywhere;word-break:break-word;hyphens:none}
+ .agm .ev.evm p b{font-weight:700;font-size:inherit;white-space:normal;display:inline}
+ .agm .tg[data-n="1"] .ev.evm p{font-size:12.5px}.agm .tg[data-n="3"] .ev.evm p{font-size:11.5px}
+ .agm .ev.evm.gcal{border:1px dashed var(--pc,var(--g));border-left:3px solid var(--pc,var(--g))}
+ .agm .tg-scroll{scrollbar-width:none}
+ .agm .agswipe{margin:0 -12px;border-radius:0}.agm .agswipe .tg{border-radius:0;border-left:0;border-right:0;box-shadow:none}
+ .agm .tg-head,.agm .tg-all,.agm .tg-body{grid-template-columns:38px repeat(var(--n),minmax(0,1fr))}
+
 }
 ol.steps{padding-left:18px;margin:6px 0}ol.steps li{margin-bottom:6px;font-size:13.5px}
 @media(max-width:820px){.kpis{grid-template-columns:1fr 1fr;gap:10px}.kpi{padding:12px}.kpi .v{font-size:19px}.kpi .s{font-size:11.5px}}
@@ -475,7 +484,7 @@ body.noscroll{overflow:hidden}
 <script>
 /* ================= utilidades ================= */
 const KEY='mentha_crm_v1';
-const APP_VERSION='2.6.0';
+const APP_VERSION='2.6.1';
 const $=id=>document.getElementById(id);
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
 const p2=n=>String(n).padStart(2,'0');
@@ -684,7 +693,7 @@ function fdl(d){const[y,m,dd]=d.split('-');return+dd+' '+MSH[+m-1]}
 function durMin(a){if(+a.duracao)return+a.duracao;return(a.items||[]).reduce((t,i)=>{const s=db.services.find(x=>x.nome===i.servico);return t+(s?+s.duracao||0:0)},0)||+db.settings.duracaoPadrao||90}
 const toMin=h=>{const[a,b]=String(h||'0:0').split(':').map(Number);return a*60+(b||0)};
 const fromMin=m=>p2(Math.floor(m/60)%24)+':'+p2(Math.round(m%60));
-const PXH=56;
+let PXH=56;
 const MOB=()=>innerWidth<760;let agListDays=30,agMini=false,agMiniM='',agAnim=0,agScrollMem={k:'',top:0};
 function agRange(){if(agView==='dia')return[agDate,agDate];if(agView==='dias3')return[agDate,addD(agDate,2)];if(agView==='lista'&&MOB())return[agDate,addD(agDate,agListDays-1)];if(agView==='semana'){const s=wkStart(agDate);return[s,addD(s,6)]}if(agView==='mes'){const s=wkStart(agDate.slice(0,7)+'-01');return[s,addD(s,41)]}return[agFrom||agDate.slice(0,7)+'-01',agTo||mEnd(agDate.slice(0,7))]}
 function agTitle(){if(agView==='dias3'){const e=addD(agDate,2);return`${fdl(agDate)} – ${fdl(e)} de ${e.slice(0,4)}`}if(agView==='dia')return`${dow(agDate)}, ${fdl(agDate)} de ${agDate.slice(0,4)}`;if(agView==='semana'){const s=wkStart(agDate),e=addD(s,6);return`${fdl(s)} – ${fdl(e)} de ${e.slice(0,4)}`}if(agView==='mes')return mLabel(agDate.slice(0,7));const[f,t]=agRange();return`${fd(f)} a ${fd(t)}`}
@@ -818,10 +827,18 @@ function calMonth(f){const m=agDate.slice(0,7),td=todayISO();const L=agItems(f,a
  for(let i=0;i<42;i++){const d=addD(f,i),arr=by[d]||[];
   o+=`<div class="cm-cell ${d.slice(0,7)!==m?'out':''} ${d===td?'today':''}" data-d="${d}" onclick="if(innerWidth<760){agDate='${d}';agSet('dia')}else apptForm(null,{data:'${d}'})"><button class="cm-day" onclick="event.stopPropagation();agDate='${d}';agSet('dia')">${+d.slice(8)}</button><div class="cm-dots">${arr.slice(0,8).map(x=>`<i class="${x.g?'g':''} ${x.a&&x.a.status!=='agendado'?'r':''}" style="${pstyle(x.a?pf(x.a):(x.g._prof||''))}"></i>`).join('')}</div>${arr.length?`<span class="cm-dots cm-n" style="max-width:none">${arr.length}</span>`:''}${arr.slice(0,mx).map(evChip).join('')}${arr.length>mx?`<button class="cm-more" onclick="event.stopPropagation();agDate='${d}';agSet('dia')">+${arr.length-mx} mais</button>`:''}<div class="cm-fill"></div></div>`}
  return o+'</div></div>'}
-function layout(evs){evs.sort((a,b)=>a.ini-b.ini||b.dur-a.dur);let cl=[],end=-1;const out=[];const flush=()=>{const lanes=[];cl.forEach(x=>{let l=lanes.findIndex(e=>e<=x.ini);if(l<0){l=lanes.length;lanes.push(0)}lanes[l]=x.ini+x.dur;x.lane=l});cl.forEach(x=>x.lanes=lanes.length);out.push(...cl);cl=[]};evs.forEach(x=>{if(cl.length&&x.ini>=end)flush();cl.push(x);end=Math.max(end,x.ini+x.dur)});if(cl.length)flush();return out}
-function calGrid(days){const td=todayISO(),one=days.length===1;const L=agItems(days[0],days[days.length-1]);
+function layout(evs,n){evs.sort((a,b)=>a.ini-b.ini||b.dur-a.dur);const ind=n>=7?.42:n>=3?.22:.1;const placed=[];
+ evs.forEach(x=>{const xe=x.ini+x.dur;const ov=placed.filter(p=>p.ini<xe&&p.ini+p.dur>x.ini);
+  const near=ov.find(p=>x.ini-p.ini<30);
+  if(near){const g=near.grp;g.m.push(x);x.grp=g}
+  else if(ov.length){const par=ov.reduce((a,b)=>b.d>=a.d?b:a);const l=Math.min(.7,par.l+ind*par.w);x.grp={l,w:1-l,m:[x]};x.d=par.d+1}
+  else{x.grp={l:0,w:1,m:[x]};x.d=0}
+  if(x.d==null)x.d=x.grp.m[0].d;
+  x.grp.m.forEach((m,i)=>{m.w=x.grp.w/x.grp.m.length;m.l=x.grp.l+i*m.w});placed.push(x)});
+ evs.forEach(x=>{x.z=2+x.d});return evs}
+function calGrid(days){PXH=MOB()?32:56;const td=todayISO(),one=days.length===1;const L=agItems(days[0],days[days.length-1]);
  let H0=8,H1=20;L.forEach(x=>{if(x.ini!=null){H0=Math.min(H0,Math.floor(x.ini/60));H1=Math.max(H1,Math.ceil((x.ini+x.dur)/60))}});H1=Math.min(24,H1);H0=Math.max(0,H0);
- const cols=days.map(d=>{const evs=L.filter(x=>x.data===d);return{d,all:evs.filter(x=>x.ini==null),tm:layout(evs.filter(x=>x.ini!=null))}});
+ const cols=days.map(d=>{const evs=L.filter(x=>x.data===d);return{d,all:evs.filter(x=>x.ini==null),tm:layout(evs.filter(x=>x.ini!=null),days.length)}});
  const hasAll=cols.some(c=>c.all.length),now=new Date(),nowMin=now.getHours()*60+now.getMinutes();
  const hrs=[...Array(H1-H0).keys()];
  return`<div class="tg ${one?'one':''}" data-n="${days.length}"><div class="tg-in" style="--n:${days.length}">
@@ -830,9 +847,10 @@ function calGrid(days){const td=todayISO(),one=days.length===1;const L=agItems(d
   <div class="tg-scroll" id="tgScroll" data-h0="${H0}"><div class="tg-body" style="height:${(H1-H0)*PXH}px"><div class="tg-hours">${hrs.map(i=>`<div style="height:${PXH}px"><span>${p2(H0+i)}:00</span></div>`).join('')}</div>
   ${cols.map(c=>`<div class="tg-col" data-d="${c.d}" data-h0="${H0}" onclick="slotClick(event,'${c.d}',${H0})">${hrs.map(()=>`<div class="tg-line" style="height:${PXH}px"></div>`).join('')}${c.d===td&&nowMin>=H0*60&&nowMin<=H1*60?`<div class="tg-now" style="top:${(nowMin-H0*60)/60*PXH}px"></div>`:''}${c.tm.map(x=>evBlock(x,H0,one)).join('')}</div>`).join('')}
   </div></div></div></div>`}
-function evBlock(x,H0,wide){const top=(x.ini-H0*60)/60*PXH,hg=Math.max(22,x.dur/60*PXH-2),w=100/x.lanes,l=x.lane*w;const st=`top:${top}px;height:${hg}px;left:calc(${l}% + 2px);width:calc(${w}% - 4px)`;
+function evBlock(x,H0,wide){const top=(x.ini-H0*60)/60*PXH,hg=Math.max(22,x.dur/60*PXH-2),w=x.w*100,l=x.l*100;const mob=MOB();const hg2=mob?Math.max(14,x.dur/60*PXH-1):hg;const st=`top:${top}px;height:${hg2}px;left:calc(${l}% + ${mob?1:2}px);width:calc(${w}% - ${mob?2:4}px);z-index:${x.z}`;
+ if(x.a&&MOB()){const a=x.a,c=client(a.clientId)||{};return`<div class="ev evm ${a.status} ${a.gPending?'pend':''}" ${a.status==='agendado'?`data-drag="${a.id}"`:''} style="${st};${pstyle(pf(a))}" onclick="event.stopPropagation();apptForm('${a.id}')"><p>${c.alergiaDesc?'⚠️ ':''}<b>${esc(cname(a))}</b> — ${esc(servs(a))}${wide?' · '+a.hora+' – '+fromMin(x.ini+x.dur):''}</p></div>`}
  if(x.a){const a=x.a,c=client(a.clientId)||{};return`<div class="ev ${a.status} ${a.gPending?'pend':''}" ${a.status==='agendado'?`data-drag="${a.id}"`:''} style="${st};${pstyle(pf(a))}" onclick="event.stopPropagation();apptForm('${a.id}')" title="${esc(cname(a)+' — '+servs(a))}"><b>${esc(cname(a))}</b><span>${a.hora} – ${fromMin(x.ini+x.dur)}${wide?' · '+esc(servs(a))+' · '+BRL(tot(a))+(prof?'':' · '+esc(pf(a))):''}</span>${!wide&&hg>60?`<span>${esc(servs(a))}</span>`:''}${c.alergiaDesc?'<i title="Alergia">⚠️</i>':''}</div>`}
- const e=x.g;return`<div class="ev gcal" style="${st};${e._prof?pstyle(e._prof):''}" onclick="event.stopPropagation();importGEvent('${e.id}')" title="Evento do Google — clique para importar"><b>${esc(e.summary||'(sem título)')}</b><span>${fromMin(x.ini)} – ${fromMin(x.ini+x.dur)} · ${e._prof?'agenda '+esc(e._prof):'Google'}</span></div>`}
+ const e=x.g;if(MOB())return`<div class="ev evm gcal" style="${st};${e._prof?pstyle(e._prof):''}" onclick="event.stopPropagation();importGEvent('${e.id}')"><p><b>${esc(e.summary||'(sem título)')}</b>${wide?' · '+fromMin(x.ini)+' – '+fromMin(x.ini+x.dur):''}</p></div>`;return`<div class="ev gcal" style="${st};${e._prof?pstyle(e._prof):''}" onclick="event.stopPropagation();importGEvent('${e.id}')" title="Evento do Google — clique para importar"><b>${esc(e.summary||'(sem título)')}</b><span>${fromMin(x.ini)} – ${fromMin(x.ini+x.dur)} · ${e._prof?'agenda '+esc(e._prof):'Google'}</span></div>`}
 function slotClick(e,d,H0){const r=e.currentTarget.getBoundingClientRect();const m=Math.floor((e.clientY-r.top)/PXH*2)*30+H0*60;apptForm(null,{data:d,hora:fromMin(Math.min(Math.max(m,0),23*60+30))})}
 function apptCard(a){
  const c=client(a.clientId)||{},st=STATUS[a.status]||['?',''];
