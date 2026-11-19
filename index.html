@@ -357,6 +357,9 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none!importa
  .agm .tg-head,.agm .tg-all,.agm .tg-body{grid-template-columns:38px repeat(var(--n),minmax(0,1fr))}
 
 }
+.gban{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between;background:var(--brand-soft);color:var(--brand-ink);border-radius:12px;padding:10px 12px;margin:0 0 10px;font-size:13.5px}
+.gban.warn{background:#FFF4CC;color:#6E5200}.gban span{flex:1 1 220px}
+.grev{display:flex;flex-direction:column;gap:8px}.grev-it{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:10px 12px}.grev-it>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0}
 ol.steps{padding-left:18px;margin:6px 0}ol.steps li{margin-bottom:6px;font-size:13.5px}
 @media(max-width:820px){.kpis{grid-template-columns:1fr 1fr;gap:10px}.kpi{padding:12px}.kpi .v{font-size:19px}.kpi .s{font-size:11.5px}}
 
@@ -484,7 +487,7 @@ body.noscroll{overflow:hidden}
 <script>
 /* ================= utilidades ================= */
 const KEY='mentha_crm_v1';
-const APP_VERSION='2.6.1';
+const APP_VERSION='2.7.0';
 const $=id=>document.getElementById(id);
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
 const p2=n=>String(n).padStart(2,'0');
@@ -714,8 +717,8 @@ function gMatch(items){
   const en=e.end&&e.end.dateTime&&gLocal(e.end.dateTime);if(en){const dm=Math.round((new Date(e.end.dateTime)-new Date(e.start.dateTime))/6e4);if(dm>=10&&dm<=720)best.duracao=dm}
   L.splice(L.indexOf(best),1);n++});
  if(n)save();return n}
-async function gFetchAll(f,t,c){c=c||db.settings.gCalendarId||'primary';let items=[],tk='';const tmin=encodeURIComponent(f+'T00:00:00-03:00'),tmax=encodeURIComponent(addD(t,1)+'T00:00:00-03:00');
- for(let i=0;i<20;i++){const j=await gFetch(`calendars/${encodeURIComponent(c)}/events?singleEvents=true&orderBy=startTime&maxResults=2500&timeMin=${tmin}&timeMax=${tmax}${tk?'&pageToken='+encodeURIComponent(tk):''}`);items=items.concat((j&&j.items)||[]);tk=j&&j.nextPageToken;if(!tk)break}return items}
+async function gFetchAll(f,t,c,del){c=c||db.settings.gCalendarId||'primary';let items=[],tk='';const tmin=encodeURIComponent(f+'T00:00:00-03:00'),tmax=encodeURIComponent(addD(t,1)+'T00:00:00-03:00');
+ for(let i=0;i<20;i++){const j=await gFetch(`calendars/${encodeURIComponent(c)}/events?singleEvents=true${del?'&showDeleted=true':''}&maxResults=2500&timeMin=${tmin}&timeMax=${tmax}${tk?'&pageToken='+encodeURIComponent(tk):''}`);items=items.concat((j&&j.items)||[]);tk=j&&j.nextPageToken;if(!tk)break}return items}
 async function pullTimes(){if(!gReady())return gConnect(pullTimes);if(PROFS().every(p=>!p.cal)){await loadCalList(true)}const sem=db.appts.filter(a=>a.data&&!a.hora&&!a.gcalId&&a.status!=='cancelado').map(a=>a.data).sort();if(!sem.length)return toast('Todos os atendimentos já têm horário ✓');
  toast('Buscando horários no Google Agenda…');try{const items=(await Promise.all(readCals().map(c=>gFetchAll(sem[0],sem[sem.length-1],c.cal).then(L=>L.map(e=>Object.assign(e,{_prof:c.prof,_cal:c.cal})))))).flat();const n=gMatch(items);gEv.key='';render();const rest=db.appts.filter(a=>a.data&&!a.hora&&a.status!=='cancelado').length;
  modal('Horários do Google Agenda',`<p style="margin-top:0"><b>${n}</b> atendimento(s) receberam o horário do Google Agenda (de ${items.length} eventos lidos entre ${fd(sem[0])} e ${fd(sem[sem.length-1])}).</p><p class="small muted">O app liga o evento ao atendimento do mesmo dia quando o <b>nome da cliente</b> aparece no título ou na descrição do evento. ${rest?`Ainda ficaram <b>${rest}</b> sem horário — normalmente porque o evento não tem o nome da cliente, tem só um apelido, ou não existe na agenda. Esses continuam na faixa “sem hora”; você pode abrir e preencher o horário, ou clicar no evento azul do Google para importar.`:''}</p>`,{extra:'<button class="btn" onclick="closeModal()">OK</button>'})}catch(e){toast('Erro Google: '+e.message)}}
@@ -727,16 +730,16 @@ function agItems(f,t){
 }
 function agEnsureG(f,t){if(!gReady())return;const RC=readCals();const k=f+'|'+t+'|'+RC.map(c=>c.cal).join(',');if(gEv.key===k||gEv.loading===k)return;gEv.loading=k;const tmin=encodeURIComponent(f+'T00:00:00-03:00'),tmax=encodeURIComponent(addD(t,1)+'T00:00:00-03:00');
  Promise.all(RC.map(c=>gFetch(`calendars/${encodeURIComponent(c.cal)}/events?singleEvents=true&orderBy=startTime&maxResults=500&timeMin=${tmin}&timeMax=${tmax}`).then(j=>((j&&j.items)||[]).map(e=>Object.assign(e,{_prof:c.prof,_cal:c.cal}))))).then(L=>{gEv={key:k,items:L.flat()};const n=gMatch(gEv.items);if(n)toast(`${n} horário(s) puxados do Google Agenda ✓`);if(tab==='agenda')render()}).catch(e=>{gEv.loading='';toast('Erro Google: '+e.message)})}
-function gPendList(){const td=todayISO();return db.appts.filter(a=>a.gPending||(a.status==='agendado'&&a.data>=td&&!a.gcalId))}
+function gPendList(){const td=todayISO(),d7=addD(td,-7);return db.appts.filter(a=>a.gPending||(!a.gcalId&&((a.status==='agendado'&&a.data>=td)||(a.status==='realizado'&&a.hora&&a.data>=d7&&a.data<=td))))}
 function rAgenda(v){
  if(MOB())return rAgendaM(v);
- const[f,t]=agRange();agEnsureG(f,t);
+ const[f,t]=agRange();agEnsureG(f,t);gTwoAuto();
  const pend=db.settings.gClientId?gPendList().length+(db.gDelQ||[]).length:0;
- const gBtn=!db.settings.gClientId?`<button class="btn ghost" onclick="go('config')">🔗 Conectar Google Agenda</button>`:gReady()?`<span class="pill gg" title="Os atendimentos criados aqui vão para o Google Agenda">● Google Agenda conectada</span><button class="btn ghost sm" onclick="gEv.key='';render()" title="Recarregar eventos do Google">↻</button>`:`<button class="btn g" onclick="gConnect(flushPending)">🔗 Entrar com Google</button>`;
+ const gBtn=!db.settings.gClientId?`<button class="btn ghost" onclick="go('config')">🔗 Conectar Google Agenda</button>`:gReady()?`<span class="pill gg" title="Os atendimentos criados aqui vão para o Google Agenda">● Google Agenda conectada</span><button class="btn ghost sm" onclick="gTwoWay(true)" title="Conferir agora: envia ao Google o que falta e traz do Google o que mudou (última: ${gAgo()})">⇄ Sincronizar</button>`:`<button class="btn g" onclick="gConnect(flushPending)">🔗 Entrar com Google</button>`;
  const V=[['dia','Dia'],['dias3','3 dias'],['semana','Semana'],['mes','Mês'],['lista','Lista']];
  const nd=agView==='dia'||agDate>todayISO()?agDate:todayISO();
  v.innerHTML=`<div class="toolbar"><h2>Agenda</h2>${gBtn}${pend?`<button class="btn soft sm" onclick="gReady()?flushPending():gConnect(flushPending)" title="Agendamentos ainda não enviados ao Google Agenda">⟳ Enviar ${pend} ao Google</button>`:''}${db.settings.gClientId&&db.appts.some(a=>a.data&&!a.hora&&!a.gcalId&&a.status!=='cancelado')?`<button class="btn ghost" onclick="pullTimes()" title="Copia o horário dos eventos do Google Agenda para os atendimentos sem hora">🕒 Puxar horários do Google</button>`:''}<button class="btn" onclick="apptForm(null,{data:'${nd}'})">+ Agendar</button></div>
- ${profBar()}<div class="clibar"><input class="tinput" list="dlAgCli" placeholder="🔍 Filtrar por cliente" value="${agCli&&client(agCli)?esc(client(agCli).nome):''}" onchange="agSetCli(this.value)"><datalist id="dlAgCli">${db.clients.slice().sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')).map(c=>`<option value="${esc(c.nome)}">`).join('')}</datalist>${agCli?'<button class="btn ghost sm" onclick="agSetCli(\'\')">✕ Limpar</button>':''}</div>${agCli?cliAgendaCard():''}<div class="calbar sect"><b class="caltitle">${agTitle()}</b><button class="btn ghost sm" onclick="agNav(0)">Hoje</button><button class="btn ghost sm icon" onclick="agNav(-1)" aria-label="Anterior">‹</button><button class="btn ghost sm icon" onclick="agNav(1)" aria-label="Próximo">›</button><input type="date" class="tinput" style="width:auto" value="${agDate}" onchange="agGo(this.value)" title="Ir para a data"><span style="flex:1"></span><div class="seg">${V.map(([k,l])=>`<button class="${agView===k?'on':''}" onclick="agSet('${k}')">${l}</button>`).join('')}</div></div>
+ ${gBanner()}${profBar()}<div class="clibar"><input class="tinput" list="dlAgCli" placeholder="🔍 Filtrar por cliente" value="${agCli&&client(agCli)?esc(client(agCli).nome):''}" onchange="agSetCli(this.value)"><datalist id="dlAgCli">${db.clients.slice().sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')).map(c=>`<option value="${esc(c.nome)}">`).join('')}</datalist>${agCli?'<button class="btn ghost sm" onclick="agSetCli(\'\')">✕ Limpar</button>':''}</div>${agCli?cliAgendaCard():''}<div class="calbar sect"><b class="caltitle">${agTitle()}</b><button class="btn ghost sm" onclick="agNav(0)">Hoje</button><button class="btn ghost sm icon" onclick="agNav(-1)" aria-label="Anterior">‹</button><button class="btn ghost sm icon" onclick="agNav(1)" aria-label="Próximo">›</button><input type="date" class="tinput" style="width:auto" value="${agDate}" onchange="agGo(this.value)" title="Ir para a data"><span style="flex:1"></span><div class="seg">${V.map(([k,l])=>`<button class="${agView===k?'on':''}" onclick="agSet('${k}')">${l}</button>`).join('')}</div></div>
  ${agView==='lista'?`<div class="calbar sect"><label class="small muted">De <input type="date" class="tinput" style="width:auto" value="${f}" onchange="agFrom=this.value;render()"></label><label class="small muted">Até <input type="date" class="tinput" style="width:auto" value="${t}" onchange="agTo=this.value;render()"></label><div class="chips">${[['prox','Só agendados'],['todos','Todos']].map(([k,l])=>`<button class="chip ${agFilter===k?'on':''}" onclick="agFilter='${k}';render()">${l}</button>`).join('')}</div></div>`:''}
  ${agView==='mes'?calMonth(f):agView==='lista'?calList(f,t):calGrid(agDaysOf(f))}
  <div class="chips small muted" style="margin-top:10px;gap:12px"><span><span class="ev-chip realizado" style="display:inline-block">realizado</span></span>${PROFS().map(p=>`<span><span class="ev-chip" style="display:inline-block;${pstyle(p.nome)}">${esc(p.nome)}</span></span>`).join('')}<span><span class="ev-chip gcal" style="display:inline-block">evento do Google ainda não ligado</span></span><span><span class="ev-chip pend" style="display:inline-block">aguardando envio</span></span><span>Clique num horário vazio para agendar. Para mudar de dia ou hora, arraste o horário (no celular: segure e arraste).</span></div>`;
@@ -762,7 +765,8 @@ function agMiniToggle(){agMini=!agMini;agMiniM=agDate.slice(0,7);render()}
 function agViewSheet(){const pend=db.settings.gClientId?gPendList().length+(db.gDelQ||[]).length:0;
  modal('Visualizar',`<div class="vsheet">${Object.entries(VNAMES).map(([k,l])=>`<button class="${agView===k?'on':''}" onclick="closeModal();agSet('${k}')">${l}</button>`).join('')}</div>
  <div class="small muted" style="margin:14px 0 6px;font-weight:600">Google Agenda</div>
- <div class="chips">${!db.settings.gClientId?`<button class="btn ghost" onclick="closeModal();go('config')">Conectar Google Agenda</button>`:gReady()?`<button class="btn ghost" onclick="closeModal();gEv.key='';render()">↻ Recarregar eventos</button>`:`<button class="btn g" onclick="closeModal();gConnect(flushPending)">Entrar com Google</button>`}${pend?`<button class="btn soft" onclick="closeModal();gReady()?flushPending():gConnect(flushPending)">⟳ Enviar ${pend} ao Google</button>`:''}${db.settings.gClientId&&db.appts.some(a=>a.data&&!a.hora&&!a.gcalId&&a.status!=='cancelado')?`<button class="btn ghost" onclick="closeModal();pullTimes()">🕒 Puxar horários</button>`:''}</div>
+ <div class="chips">${!db.settings.gClientId?`<button class="btn ghost" onclick="closeModal();go('config')">Conectar Google Agenda</button>`:gReady()?`<button class="btn ghost" onclick="closeModal();gTwoWay(true)">⇄ Sincronizar agora</button>`:`<button class="btn g" onclick="closeModal();gConnect(()=>gTwoWay(true))">Entrar com Google</button>`}${pend?`<button class="btn soft" onclick="closeModal();gReady()?flushPending():gConnect(flushPending)">⟳ Enviar ${pend} ao Google</button>`:''}${db.settings.gClientId&&db.appts.some(a=>a.data&&!a.hora&&!a.gcalId&&a.status!=='cancelado')?`<button class="btn ghost" onclick="closeModal();pullTimes()">🕒 Puxar horários</button>`:''}</div>
+ ${db.settings.gClientId?`<div class="small muted" style="margin-top:8px">Última conferência com o Google: ${gAgo()}. O app confere sozinho a cada poucos minutos enquanto estiver aberto e conectado.</div>`:''}
  <div class="small muted" style="margin:14px 0 6px;font-weight:600">Cores</div>
  <div class="chips small">${PROFS().map(p=>`<span class="ev-chip" style="display:inline-block;${pstyle(p.nome)}">${esc(p.nome)}</span>`).join('')}<span class="ev-chip realizado" style="display:inline-block">realizado</span><span class="ev-chip gcal" style="display:inline-block">evento do Google</span><span class="ev-chip pend" style="display:inline-block">aguardando envio</span></div>
  <div class="small muted" style="margin-top:12px">Deslize para o lado para mudar de dia/semana/mês. Para mudar um horário, segure o atendimento e arraste.</div>`)}
@@ -775,7 +779,7 @@ function calSchedule(f,t){const td=todayISO();const L=agItems(f,t);const by={};L
  days.forEach(d=>{const m=d.slice(0,7);if(m!==lastM){o+=`<div class="sch-m">${mLabel(m)}</div>`;lastM=m}const arr=by[d]||[];
   o+=`<div class="sch-d ${d===td?'today':''}"><div class="sch-dl"><span>${dow(d)}</span><b>${+d.slice(8)}</b></div><div class="sch-items">${arr.length?arr.map(x=>{if(x.a){const a=x.a;return`<button class="sch-it ${a.status}" style="${pstyle(pf(a))}" onclick="apptForm('${a.id}')"><b>${esc(cname(a))}</b><span>${a.hora?a.hora+' – '+fromMin(toMin(a.hora)+durMin(a)):'sem hora'} · ${esc(servs(a))}${a.status!=='agendado'?' · '+STATUS[a.status][0]:''}</span></button>`}const e=x.g;return`<button class="sch-it gcal" style="${e._prof?pstyle(e._prof):''}" onclick="importGEvent('${e.id}')"><b>${esc(e.summary||'(sem título)')}</b><span>${x.ini!=null?fromMin(x.ini):'dia todo'} · evento do Google</span></button>`}).join(''):'<div class="sch-empty">Nada agendado</div>'}</div></div>`});
  return`<div class="sch">${f>td?`<button class="btn ghost" style="width:100%;margin-bottom:8px" onclick="agDate=addD(agDate,-14);agListDays+=14;render()">↑ Ver dias anteriores</button>`:`<button class="btn ghost" style="width:100%;margin-bottom:8px" onclick="agDate=addD(agDate,-14);agListDays+=14;render()">↑ Ver dias anteriores</button>`}${o||'<div class="empty">Nada agendado neste período.</div>'}<button class="btn ghost" id="schMore" style="width:100%;margin-top:10px" onclick="agListDays+=30;render()">Mostrar mais 30 dias</button></div>`}
-function rAgendaM(v){const[f,t]=agRange();agEnsureG(f,t);const grid=['dia','dias3','semana'].includes(agView);
+function rAgendaM(v){const[f,t]=agRange();agEnsureG(f,t);gTwoAuto();const grid=['dia','dias3','semana'].includes(agView);
  const pend=db.settings.gClientId?gPendList().length+(db.gDelQ||[]).length:0;const td=todayISO();
  const gIc=db.settings.gClientId&&!gReady()?`<button class="agm-ic warn" aria-label="Entrar com Google" onclick="gConnect(flushPending)">${IC.sync}</button>`:pend?`<button class="agm-ic warn" aria-label="Enviar ${pend} ao Google" onclick="gReady()?flushPending():gConnect(flushPending)">${IC.sync}<i class="badge">${pend}</i></button>`:'';
  const body=agView==='mes'?calMonth(f):agView==='lista'?calSchedule(f,t):calGrid(agDaysOf(f));
@@ -785,6 +789,7 @@ function rAgendaM(v){const[f,t]=agRange();agEnsureG(f,t);const grid=['dia','dias
   <button class="agm-ic today" aria-label="Hoje" onclick="agNav(0)"><span>${+td.slice(8)}</span></button>
   <button class="agm-ic" aria-label="Modo de visualização: ${VNAMES[agView]}" onclick="agViewSheet()">${IC.view}</button></div>
  ${agMini?miniCal():''}
+ ${gBanner()}
  ${agCli||prof?`<div class="chips" style="margin:0 0 8px">${prof?`<button class="chip on" onclick="setProf('')">${esc(prof)} ✕</button>`:''}${agCli&&client(agCli)?`<button class="chip on" onclick="agSetCli('')">${esc(client(agCli).nome.split(' ')[0])} ✕</button>`:''}</div>`:''}
  ${agCli?cliAgendaCard():''}
  <div class="agswipe ${agView==='lista'?'noswipe':''}" id="agSwipe"><div class="agpane" id="agPane">${body}</div></div>
@@ -1311,23 +1316,105 @@ const hasScopes=t=>{const s=String((t&&t.sc)||'').split(/\s+/);return s.includes
 function gConnect(cb){
  const cid=(db.settings.gClientId||'').trim();if(!cid){go('config');return toast('Cole o Client ID do Google primeiro')}
  if(!(window.google&&google.accounts&&google.accounts.oauth2)){loadGsi(()=>toast('Pronto — clique novamente em “Entrar com Google”'));return}
- tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:GSCOPE,callback:r=>{if(r.error)return toast('Google: '+r.error);gToken={t:r.access_token,exp:Date.now()+((+r.expires_in||3600)-60)*1000,sc:r.scope||GSCOPE};try{localStorage.setItem('mentha_gtok',JSON.stringify(gToken))}catch(e){}gEv.key='';toast('Google conectado ✓');const needCals=PROFS().some(p=>!p.cal)||!(db.settings.calList||[]).length;if(needCals)loadCalList(true);syncUI();if(canSync()&&cb!==syncNow)syncNow(true);if(typeof cb==='function')cb();else render();if(cb!==flushPending&&(gPendList().length||(db.gDelQ||[]).length))flushPending()}});
+ tokenClient=google.accounts.oauth2.initTokenClient({client_id:cid,scope:GSCOPE,callback:r=>{if(r.error)return toast('Google: '+r.error);gToken={t:r.access_token,exp:Date.now()+((+r.expires_in||3600)-60)*1000,sc:r.scope||GSCOPE};try{localStorage.setItem('mentha_gtok',JSON.stringify(gToken))}catch(e){}gEv.key='';toast('Google conectado ✓');const needCals=PROFS().some(p=>!p.cal)||!(db.settings.calList||[]).length;if(needCals)loadCalList(true);syncUI();if(canSync()&&cb!==syncNow)syncNow(true);if(typeof cb==='function')cb();else render();setTimeout(()=>gTwoWay(false),400)}});
  tokenClient.requestAccessToken(gToken&&hasScopes(gToken)?{prompt:''}:{prompt:'consent'});
 }
 async function gFetch(path,o={}){const r=await fetch('https://www.googleapis.com/calendar/v3/'+path,Object.assign({},o,{headers:{Authorization:'Bearer '+gToken.t,'Content-Type':'application/json'}}));if(r.status===204||r.status===410)return null;const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error((j.error&&j.error.message)||r.status);return j}
 function apptEnd(a){const dur=durMin(a);const[y,m,d]=a.data.split('-').map(Number);const[h,mi]=(a.hora||'09:00').split(':').map(Number);const e=new Date(y,m-1,d,h,mi+dur);return e.getFullYear()+'-'+p2(e.getMonth()+1)+'-'+p2(e.getDate())+'T'+p2(e.getHours())+':'+p2(e.getMinutes())+':00'}
-function gBody(a){const c=client(a.clientId)||{};return{summary:isCanc(a)?`❌ ${cname(a)} — ${a.status==='faltou'?'faltou':'cancelou'}${a.taxa?' (taxa '+BRL(a.taxa)+')':''}`:`${a.status==='realizado'?'✅':'💅'} ${cname(a)} — ${servs(a)}`,transparency:isCanc(a)?'transparent':'opaque',description:[`Cliente: ${cname(a)}`,c.telefone?`Telefone: ${c.telefone}`:'',`Profissional: ${pf(a)}`,`Valor: ${BRL(tot(a))}`,c.alergiaDesc?`⚠️ Alergia: ${c.alergiaDesc}`:'',a.descricao||'','— Mentha CRM'].filter(Boolean).join('\n'),start:{dateTime:`${a.data}T${a.hora||'09:00'}:00`,timeZone:'America/Sao_Paulo'},end:{dateTime:apptEnd(a),timeZone:'America/Sao_Paulo'}}}
+function gBody(a){const c=client(a.clientId)||{};return{summary:isCanc(a)?`❌ ${cname(a)} — ${a.status==='faltou'?'faltou':'cancelou'}${a.taxa?' (taxa '+BRL(a.taxa)+')':''}`:`${a.status==='realizado'?'✅':'💅'} ${cname(a)} — ${servs(a)}`,transparency:isCanc(a)?'transparent':'opaque',description:[`Cliente: ${cname(a)}`,c.telefone?`Telefone: ${c.telefone}`:'',`Profissional: ${pf(a)}`,`Valor: ${BRL(tot(a))}`,c.alergiaDesc?`⚠️ Alergia: ${c.alergiaDesc}`:'',a.descricao||'','— Mentha CRM'].filter(Boolean).join('\n'),start:{dateTime:`${a.data}T${a.hora||'09:00'}:00`,timeZone:'America/Sao_Paulo'},end:{dateTime:apptEnd(a),timeZone:'America/Sao_Paulo'},extendedProperties:{private:{mentha:a.id}}}}
 function gTemplate(a){const s=a.data.replace(/-/g,'')+'T'+(a.hora||'09:00').replace(':','')+'00',e=apptEnd(a).replace(/[-:]/g,'');const b=gBody(a);return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(b.summary)+'&dates='+s+'/'+e+'&ctz=America/Sao_Paulo&details='+encodeURIComponent(b.description)}
 async function syncAppt(a,quiet){try{const tgt=calOf(pf(a)),E=c=>`calendars/${encodeURIComponent(c)}/events`;
  if(isCanc(a)&&!a.gcalId){}
  else if(a.gcalId){let c=a.gcalCal||tgt;if(c!==tgt){await gFetch(`${E(c)}/${a.gcalId}/move?destination=${encodeURIComponent(tgt)}`,{method:'POST'});c=tgt}await gFetch(`${E(c)}/${a.gcalId}`,{method:'PATCH',body:JSON.stringify(gBody(a))});a.gcalCal=c}
  else{const j=await gFetch(E(tgt),{method:'POST',body:JSON.stringify(gBody(a))});a.gcalId=j.id;a.gcalCal=tgt}
  a.gPending=false;save();if(!quiet){toast('Google Agenda atualizada ✓');render()}return true}catch(e){if(/401|invalid|credential/i.test(e.message)){gToken=null}toast('Erro Google: '+e.message);return false}}
-async function flushPending(){if(!gReady())return gConnect(flushPending);let n=0,er=0;
- for(const q of (db.gDelQ||[]).slice()){const o=typeof q==='string'?{id:q,cal:db.settings.gCalendarId||'primary'}:q;try{await gFetch(`calendars/${encodeURIComponent(o.cal)}/events/${o.id}`,{method:'DELETE'})}catch(e){}db.gDelQ=db.gDelQ.filter(x=>x!==q)}
- for(const a of gPendList()){if(a.status==='realizado'&&!a.gcalId){a.gPending=false;continue}if(await (a.gLinked&&a.gcalId&&a.status==='agendado'?gMove(a):syncAppt(a,true)))n++;else er++}
- save();gEv.key='';render();toast(n||er?`${n} atendimento(s) enviados ao Google Agenda${er?` · ${er} com erro`:''} ✓`:'Google Agenda em dia ✓')}
-function importGEvent(id){const e=(gEv.items||[]).find(x=>x.id===id);if(!e)return;const st=e.start.dateTime||e.start.date;const sum=String(e.summary||'').replace(/^(💅|✅)\s*/,'');const[nome,sv]=sum.split(/\s+[—–\-|]\s+/);const items=(sv||'').split('+').map(s=>s.trim()).filter(Boolean).map(n=>{const s=db.services.find(x=>norm(x.nome)===norm(n));return{servico:s?s.nome:n,valor:s?s.preco:''}});const c=findClient(nome);const lc=e.start.dateTime&&gLocal(st);const dEv=e.start.dateTime&&e.end&&e.end.dateTime?Math.round((new Date(e.end.dateTime)-new Date(e.start.dateTime))/6e4):0;apptForm(null,{duracao:dEv>=10&&dEv<=720?dEv:undefined,prof:e._prof||prof||'Thais',gcalCal:e._cal||'',data:lc?lc.d:st.slice(0,10),hora:lc?lc.h:'',gLinked:true,clientId:c?c.id:'',cliente:(nome||'').trim(),items,gcalId:e.id})}
+async function gFlushDel(){for(const q of (db.gDelQ||[]).slice()){const o=typeof q==='string'?{id:q,cal:db.settings.gCalendarId||'primary'}:q;try{await gFetch(`calendars/${encodeURIComponent(o.cal)}/events/${o.id}`,{method:'DELETE'})}catch(e){if(!/not found|404|410|deleted/i.test(e.message))continue}db.gDelQ=db.gDelQ.filter(x=>x!==q)}}
+async function flushPending(quiet){if(!gReady())return quiet?0:gConnect(flushPending);let n=0,er=0;
+ await gFlushDel();
+ const d7=addD(todayISO(),-7);for(const a of gPendList()){if(a.status==='realizado'&&!a.gcalId&&!(a.hora&&a.data>=d7)){a.gPending=false;continue}if(await (a.gLinked&&a.gcalId&&a.status==='agendado'?gMove(a):syncAppt(a,true)))n++;else er++}
+ save();if(quiet)return n;gEv.key='';render();toast(n||er?`${n} atendimento(s) enviados ao Google Agenda${er?` · ${er} com erro`:''} ✓`:'Google Agenda em dia ✓');return n}
+
+/* ===== sincronização nos dois sentidos: CRM ⇄ Google Agenda ===== */
+const GBACK=14,GFWD=180;let gTwoBusy=false,gTwoLast=+(()=>{try{return localStorage.getItem('mentha_g2')}catch(e){}})()||0,gReview=[];
+const SVRX=/manicure|pedicure|podal|alonga|manuten|esmalta|gel\b|cut[ií]cul|unha|blindagem|banho de gel|reparo|💅|✅/i;
+function gMid(e){return e&&e.extendedProperties&&e.extendedProperties.private&&e.extendedProperties.private.mentha||''}
+function gTitleParts(s){const t=String(s||'').replace(/^[^\p{L}]+/u,'').trim();const i=t.search(/\s*[—–|]\s*|\s+-\s+/);return i<0?[t,'']:[t.slice(0,i).trim(),t.slice(i).replace(/^\s*[—–|-]\s*/,'').trim()]}
+const GBLOCK=/^(folga|fechad|disponiv|livre|bloque|almoc|intervalo|limp|ferias|feriado|planejament|reuniao|encontro|treinament|mentoria|cilios|pessoal|medico|dentista|aula|curso|workshop|aniversario|viagem|compromisso|ocupad)/;
+function gFindCli(nm){const n=norm(nm).replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();if(n.length<3)return null;if(GBLOCK.test(n))return null;let c=db.clients.find(x=>norm(x.nome)===n);if(c)return c;
+ const tk=n.split(' ').filter(w=>w.length>=2&&!NSTOP.has(w));if(!tk.length||tk[0].length<3)return null;
+ const cand=db.clients.filter(x=>{const ct=norm(x.nome).replace(/[^a-z0-9 ]+/g,' ').split(/\s+/);return ct[0]===tk[0]&&tk.every(w=>ct.includes(w))});
+ if(cand.length===1&&(tk.length>=2||tk[0].length>=4))return cand[0];return null}
+function gSvItems(txt,c){const L=String(txt||'').replace(/[—–-]+\s*$/,'').split(/\s*\+\s*|\s*,\s*|\s+e\s+(?=[A-ZÁ-Ú])/).map(s=>s.trim()).filter(s=>s.length>2);
+ const hist=db.appts.filter(a=>a.clientId===c.id&&(a.items||[]).length).sort((a,b)=>b.data.localeCompare(a.data)).flatMap(a=>a.items);
+ const out=L.map(n=>{const nm=canonProc(n),k=norm(n);let s=db.services.find(x=>norm(x.nome)===norm(nm));if(!s){const hi=hist.find(i=>norm(i.servico).startsWith(k));if(hi)s=db.services.find(x=>x.nome===hi.servico)||{nome:hi.servico,preco:hi.valor}}if(!s)s=db.services.find(x=>norm(x.nome).startsWith(k));return s?{servico:s.nome,valor:+s.preco||0}:null}).filter(Boolean);
+ if(out.length)return out;const last=db.appts.filter(a=>a.clientId===c.id&&a.status==='realizado'&&(a.items||[]).length).sort((a,b)=>b.data.localeCompare(a.data))[0];
+ return last?last.items.filter(i=>!/taxa/i.test(i.servico||'')).map(i=>({servico:i.servico,valor:+i.valor||0})):[]}
+async function gGetEv(id,cal){try{return await gFetch(`calendars/${encodeURIComponent(cal)}/events/${id}`)}catch(e){return /not found|404/i.test(e.message)?null:'erro'}}
+async function gDelEv(e){try{await gFetch(`calendars/${encodeURIComponent(e._cal)}/events/${e.id}`,{method:'DELETE'})}catch(x){}}
+async function gTwoWay(manual){
+ if(!db.settings.gClientId){if(manual){go('config');toast('Conecte o Google Agenda primeiro (Config)')}return}
+ if(!gReady()){if(manual)gConnect(()=>gTwoWay(true));return}
+ if(gTwoBusy)return;gTwoBusy=true;const R={env:0,imp:0,lig:0,mov:0,canc:0,dup:0};if(manual)toast('Conferindo com o Google Agenda…');
+ try{
+  if(PROFS().every(p=>!p.cal)&&!(db.settings.calList||[]).length)await loadCalList(true);
+  await gFlushDel();
+  const td=todayISO(),f=addD(td,-GBACK),t=addD(td,GFWD),ign=db.settings.gIgn||{};
+  const delIds=new Set((db.gDelQ||[]).map(q=>typeof q==='string'?q:q.id));
+  const all=(await Promise.all(readCals().map(c=>gFetchAll(f,t,c.cal,true).then(L=>L.map(e=>Object.assign(e,{_prof:c.prof,_cal:c.cal})))))).flat();
+  const byId=new Map();all.forEach(e=>{const o=byId.get(e.id);if(!o||(o.status==='cancelled'&&e.status!=='cancelled'))byId.set(e.id,e)});
+  const live=[...byId.values()].filter(e=>e.status!=='cancelled'&&!delIds.has(e.id));
+  // 1) o mesmo evento importado duas vezes (dois aparelhos) → fica só um
+  const seen=new Map();db.appts.slice().sort((a,b)=>String(a.criadoEm||'').localeCompare(String(b.criadoEm||''))).forEach(a=>{if(!a.gcalId)return;const o=seen.get(a.gcalId);if(o&&a.origemG){db.appts=db.appts.filter(x=>x!==a);R.dup++}else if(!o)seen.set(a.gcalId,a)});
+  // 2) eventos criados pelo CRM (marcados com o id do atendimento)
+  const apById=new Map(db.appts.map(a=>[a.id,a]));
+  for(const e of live){const mid=gMid(e);if(!mid)continue;const a=apById.get(mid);
+   if(a){if(!a.gcalId){a.gcalId=e.id;a.gcalCal=e._cal;R.lig++}else if(a.gcalId!==e.id&&!byId.get(a.gcalId)){a.gcalId=e.id;a.gcalCal=e._cal}else if(a.gcalId!==e.id){await gDelEv(e);e._gone=1;R.dup++}}
+   else if(db.deleted&&db.deleted[mid]){await gDelEv(e);e._gone=1;R.canc++}}
+  // 3) Google → CRM: horário mudou, mudou de agenda ou foi excluído
+  for(const a of db.appts.slice()){if(!a.gcalId||a.gPending||a.status!=='agendado')continue;let e=byId.get(a.gcalId);
+   if(!e){if(a.data<f||a.data>t||!a.gcalCal)continue;e=await gGetEv(a.gcalId,a.gcalCal);if(e==='erro')continue}
+   if(!e||e.status==='cancelled'){a.status='cancelado';a.taxa=null;a.descricao=[a.descricao,'Excluído no Google Agenda em '+fd(td)].filter(Boolean).join(' · ');a.gcalId='';a.gLinked=false;R.canc++;continue}
+   if(!e.start||!e.start.dateTime)continue;const s=gLocal(e.start.dateTime);if(!s)continue;let ch=false;
+   if(s.d!==a.data||s.h!==(a.hora||'')){a.data=s.d;a.hora=s.h;ch=true}
+   const dm=e.end&&e.end.dateTime?Math.round((new Date(e.end.dateTime)-new Date(e.start.dateTime))/6e4):0;if(dm>=10&&dm<=720&&dm!==durMin(a)){a.duracao=dm;ch=true}
+   if(e._cal&&e._cal!==a.gcalCal){a.gcalCal=e._cal;if(e._prof&&PROFS().some(p=>p.nome===e._prof)&&e._prof!==pf(a))a.prof=e._prof;ch=true}
+   if(ch)R.mov++}
+  // 4) eventos do Google que ainda não estão no CRM
+  R.lig+=gMatch(live.filter(e=>!e._gone));
+  const linked=new Set(db.appts.map(a=>a.gcalId).filter(Boolean));const rev=[];
+  live.forEach(e=>{if(e._gone||linked.has(e.id)||ign[e.id]||gMid(e)||!e.start||!e.start.dateTime||e.transparency==='transparent')return;const s=gLocal(e.start.dateTime);if(!s)return;
+   const[nm,sv]=gTitleParts(e.summary);const c=gFindCli(nm);
+   if(!c){if(s.d>=td&&SVRX.test((e.summary||'')+' '+(e.description||'')))rev.push(e);return}
+   const same=db.appts.find(a=>a.clientId===c.id&&a.data===s.d&&!a.gcalId&&!isCanc(a));
+   if(same){same.gcalId=e.id;same.gcalCal=e._cal;same.gLinked=true;if(!same.hora)same.hora=s.h;linked.add(e.id);R.lig++;return}
+   if(s.d<td)return;
+   const dm=e.end&&e.end.dateTime?Math.round((new Date(e.end.dateTime)-new Date(e.start.dateTime))/6e4):0;
+   const a={id:uid(),criadoEm:new Date().toISOString(),data:s.d,hora:s.h,clientId:c.id,cliente:c.nome,items:gSvItems(sv,c),adicional:0,pagamento:'',status:'agendado',prof:(e._prof&&PROFS().some(p=>p.nome===e._prof))?e._prof:PROFS()[0].nome,ficha:{},descricao:'',gcalId:e.id,gcalCal:e._cal,gLinked:true,origemG:true};
+   if(dm>=10&&dm<=720)a.duracao=dm;db.appts.push(a);linked.add(e.id);R.imp++});
+  gReview=rev.sort((x,y)=>String(x.start.dateTime).localeCompare(String(y.start.dateTime)));
+  save();
+  // 5) CRM → Google: tudo o que ainda não está lá
+  R.env=await flushPending(true);
+  gTwoLast=Date.now();try{localStorage.setItem('mentha_g2',String(gTwoLast))}catch(e){}
+  save();gEv.key='';render();
+  const msg=[R.env&&`${R.env} enviado(s) ao Google`,R.imp&&`${R.imp} importado(s) do Google`,R.mov&&`${R.mov} horário(s) atualizado(s)`,R.canc&&`${R.canc} excluído(s)`,R.lig&&`${R.lig} ligado(s)`,R.dup&&`${R.dup} duplicado(s) removido(s)`].filter(Boolean);
+  if(msg.length||manual)toast(msg.length?'Google Agenda ⇄ CRM: '+msg.join(' · '):'CRM e Google Agenda iguais ✓')
+ }catch(e){if(/401|invalid|credential/i.test(e.message))gToken=null;if(manual)toast('Erro Google: '+e.message)}
+ finally{gTwoBusy=false}}
+function gTwoAuto(){if(db.settings.gClientId&&gReady()&&!gTwoBusy&&Date.now()-gTwoLast>90e3)setTimeout(()=>gTwoWay(false),50)}
+function gAgo(){if(!gTwoLast)return'nunca';const m=Math.round((Date.now()-gTwoLast)/6e4);return m<1?'agora mesmo':m<60?`há ${m} min`:new Date(gTwoLast).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
+function gBanner(){if(!db.settings.gClientId)return'';
+ if(!gReady())return`<div class="gban warn"><span>⚠️ <b>Google Agenda desconectada.</b> O que for mudado aqui ou no Google não passa para o outro até você conectar.</span><button class="btn sm" onclick="gConnect(()=>gTwoWay(true))">Conectar</button></div>`;
+ if(gReview.length)return`<div class="gban"><span>📅 <b>${gReview.length}</b> evento(s) no Google parecem atendimento, mas o nome não bate com nenhuma cliente.</span><button class="btn sm soft" onclick="gReviewSheet()">Conferir</button></div>`;return''}
+function gReviewSheet(){if(!gReview.length){closeModal();return render()}
+ modal('Eventos do Google para conferir',`<p class="small muted" style="margin-top:0">Estes eventos estão no Google Agenda, mas o app não achou a cliente pelo nome. Importe para criar o atendimento (se for cliente nova, ela é cadastrada), ou marque que não é atendimento.</p>
+ <div class="grev">${gReview.map(e=>{const s=gLocal(e.start.dateTime);return`<div class="grev-it"><div><b>${esc(e.summary||'(sem título)')}</b><span class="small muted">${dow(s.d)} ${fd(s.d)} · ${s.h}${e._prof?' · '+esc(e._prof):''}</span></div><div class="chips"><button class="btn sm" onclick="closeModal();importGEvent('${e.id}')">Importar</button><button class="btn sm ghost" onclick="gIgnore('${e.id}')">Não é atendimento</button></div></div>`}).join('')}</div>`,{extra:'<button class="btn ghost" onclick="closeModal()">Fechar</button>'})}
+function gIgnore(id){db.settings.gIgn=Object.assign({},db.settings.gIgn,{[id]:1});gReview=gReview.filter(e=>e.id!==id);save();gReviewSheet()}
+setInterval(()=>{if(document.visibilityState==='visible')gTwoAuto()},60000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')gTwoAuto()});
+setTimeout(gTwoAuto,2500);
+
+function importGEvent(id){const e=(gEv.items||[]).find(x=>x.id===id)||gReview.find(x=>x.id===id);if(!e)return;const st=e.start.dateTime||e.start.date;const sum=String(e.summary||'').replace(/^(💅|✅)\s*/,'');const[nome,sv]=sum.split(/\s+[—–\-|]\s+/);const items=(sv||'').split('+').map(s=>s.trim()).filter(Boolean).map(n=>{const s=db.services.find(x=>norm(x.nome)===norm(n));return{servico:s?s.nome:n,valor:s?s.preco:''}});const c=findClient(nome);const lc=e.start.dateTime&&gLocal(st);const dEv=e.start.dateTime&&e.end&&e.end.dateTime?Math.round((new Date(e.end.dateTime)-new Date(e.start.dateTime))/6e4):0;apptForm(null,{duracao:dEv>=10&&dEv<=720?dEv:undefined,prof:e._prof||prof||'Thais',gcalCal:e._cal||'',data:lc?lc.d:st.slice(0,10),hora:lc?lc.h:'',gLinked:true,clientId:c?c.id:'',cliente:(nome||'').trim(),items,gcalId:e.id})}
 
 
 

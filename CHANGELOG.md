@@ -3,6 +3,29 @@
 Cada versão publicada fica marcada no GitHub (aba **Releases**) e pode ser restaurada a qualquer momento.
 A versão em uso aparece no app em **Config → Sobre**.
 
+## V2.7 — 2.7.0 (19/11/2026)
+
+**Agenda sincronizada nos dois sentidos com o Google Agenda**
+- O app confere sozinho com o Google, enquanto estiver aberto e conectado:
+  - ao abrir;
+  - ao voltar para o app;
+  - a cada poucos minutos.
+- Também dá para conferir na hora pelo botão **⇄ Sincronizar**.
+- **CRM → Google:**
+  - todo atendimento marcado no app vai para a agenda da profissional;
+  - os concluídos dos últimos 7 dias que ficaram de fora também vão;
+  - excluir no app remove do Google, mesmo que tenha sido excluído em outro aparelho.
+- **Google → CRM:**
+  - um evento novo com o nome de uma cliente cadastrada (ex.: "Bruna Thais Gallo — Manicure russa") vira um atendimento no app, com os serviços e valores;
+  - mudou o horário ou o dia no Google → muda no app;
+  - passou o evento para a agenda da Amanda → o atendimento passa para a Amanda;
+  - excluiu no Google → o atendimento fica como cancelado no app (sem taxa), com a observação "Excluído no Google Agenda".
+- Compromissos pessoais (Folga, Fechado, Limpar, Mentoria, Encontro…) não viram atendimento.
+- Eventos que parecem atendimento, mas sem cliente reconhecida, aparecem num aviso **Conferir**, com as opções **Importar** e **Não é atendimento**.
+- Se a mudança foi feita no app e ainda não subiu, vale a do app.
+- Cada atendimento enviado leva uma marca, que impede duplicar o evento quando dois aparelhos sincronizam ao mesmo tempo.
+- Aviso amarelo na Agenda quando o login do Google expira.
+
 ## V2.6 — 2.6.1 (17/11/2026)
 
 **Agenda no celular ainda mais parecida com o Google Agenda**

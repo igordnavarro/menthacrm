@@ -50,7 +50,7 @@ Sem configurar nada, o botão 📅 de cada atendimento já abre o evento preench
 4. **Credenciais → Criar credenciais → ID do cliente OAuth → Aplicativo da Web**. Em *Origens JavaScript autorizadas* coloque `https://SEU-USUARIO.github.io`.
 5. Copie o Client ID e cole em **Config → Google Agenda** no app. Depois, **Entrar com Google**.
 
-Com isso, cada agendamento cria/atualiza/remove o evento na agenda, e a aba Agenda mostra os eventos do Google do mês para importar. O login do Google dura cerca de 1 hora; quando expirar, é só clicar em "Entrar com Google" de novo.
+Com isso, a agenda fica igual nos dois aplicativos. O que é marcado, mudado ou excluído no app vai para o Google. O que é marcado, mudado ou excluído no Google vem para o app: o evento precisa ter o nome da cliente no título, e compromissos pessoais como Folga e Fechado são ignorados. O login do Google dura cerca de 1 hora; quando expirar, é só clicar em "Entrar com Google" de novo.
 
 ## Sincronização entre aparelhos
 
