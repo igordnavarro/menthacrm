@@ -3,6 +3,34 @@
 Cada versão publicada fica marcada no GitHub (aba **Releases**) e pode ser restaurada a qualquer momento.
 A versão em uso aparece no app em **Config → Sobre**.
 
+## V2.8 — 2.8.0 (20/11/2026)
+
+**Anamnese por atendimento**
+- A ficha de avaliação (a mesma do papel) agora é preenchida no app, uma para cada atendimento. Ela tem:
+  - dados da cliente;
+  - saúde e hábitos;
+  - avaliação da lâmina e da cutícula;
+  - cuidados anteriores;
+  - objetivos;
+  - detalhamento do procedimento;
+  - observação do retorno;
+  - termo de autorização.
+- A ficha nova já vem com as respostas da última, e você muda só o que for diferente naquele dia.
+- Nova aba **📋 Anamnese** no cadastro da cliente, com todas as fichas. Cada uma mostra o que mudou desde a ficha anterior.
+- Para preencher, use o botão no atendimento ou na aba da cliente. Também dá para **imprimir** a ficha, com espaço para assinatura.
+- Alergia, gestante, diabetes e os dados da cliente (CPF, endereço, estado…) da ficha mais recente atualizam o cadastro.
+
+**Custo de materiais e Preço certo** (Serviços › Materiais / Preço certo)
+- Catálogo de materiais com o preço pago e quantos atendimentos cada embalagem rende. Já vem com as listas da planilha "Preço certo".
+- Cada serviço tem a sua lista de materiais. A Manutenção usa os materiais do Alongamento, a 70%.
+- Check list igual ao da planilha:
+  - custos do estúdio ÷ atendimentos por mês;
+  - reservas, imposto e taxa do cartão;
+  - lucro e situação Lucro/Atenção;
+  - preço mínimo (×4,5) e sugerido (×6).
+- O custo de materiais aparece no atendimento e fica gravado ao concluir.
+- Nos Relatórios, um quadro novo mostra o custo de materiais por serviço.
+
 ## V2.7 — 2.7.0 (19/11/2026)
 
 **Agenda sincronizada nos dois sentidos com o Google Agenda**
