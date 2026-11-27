@@ -3,6 +3,14 @@
 Cada versão publicada fica marcada no GitHub (aba **Releases**) e pode ser restaurada a qualquer momento.
 A versão em uso aparece no app em **Config → Sobre**.
 
+## V2.8 — 2.8.1 (27/11/2026)
+
+**Materiais ligados a mais de um procedimento**
+- Em Serviços › Materiais, cada material tem o botão **🔗 Procedimentos**. Nele você marca ou desmarca os procedimentos que usam o material, e pode escolher vários.
+- O "rende" (quantos atendimentos uma embalagem atende) pode ser diferente em cada procedimento.
+- Funciona também para um material novo, antes mesmo de salvar a tabela.
+- Ao ligar um material à Manutenção, que usava a lista do Alongamento, ela passa a ter lista própria, que começa como cópia da lista do Alongamento.
+
 ## V2.8 — 2.8.0 (20/11/2026)
 
 **Anamnese por atendimento**
